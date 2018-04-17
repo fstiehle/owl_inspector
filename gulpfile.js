@@ -60,7 +60,7 @@ gulp.task('minify', function () {
 // sass
 gulp.task('sass', function () {
   return gulp.src(DEV_DIR + '/sass/**/*.scss')
-    .pipe(sass({includePaths: ['/sass/']})
+    .pipe(sass({includePaths: ['/sass/', 'node_modules']})
     .on('error', sass.logError))
     .pipe(gulp.dest(DIST_DIR + '/css/'))
     .pipe(connect.reload());
