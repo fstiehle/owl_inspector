@@ -14,17 +14,17 @@
     "browserify": "^16.2.0",
     "electron": "^1.8.4",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-connect": "^4.0.0",
-    "gulp-minifier": "^0.1.4",
-    "gulp-sass": "^2.3.2",
+    "gulp-babel": "^7.0.1",
+    "gulp-connect": "^5.5.0",
+    "gulp-minifier": "^1.2.2",
+    "gulp-sass": "^4.0.1",
     "gulp-util": "^3.0.7",
-    "run-sequence": "^1.2.2",
-    "vinyl-source-stream": "^1.1.0"
+    "run-sequence": "^2.2.1",
+    "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
-    "react": "^15.1.0",
-    "react-dom": "^15.1.0"
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
   },
   "scripts": {
     "test": "test",
