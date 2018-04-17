@@ -1,12 +1,15 @@
 // Handles the electron build
-
 const { app, BrowserWindow } = require('electron'),
   path = require('path'),
   url = require('url')
 
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let window;
+
 function createWindow() {
   // Create the browser window.
-  const window = new BrowserWindow({
+  window = new BrowserWindow({
     width: 800,
     height: 600,
     show: false,
@@ -14,9 +17,6 @@ function createWindow() {
     vibrancy: "light",
     backgroundColor: '#191919'
   })
-
-  /* let child = new BrowserWindow({
-    height: 200, parent: window, show: false}) */
 
   // and load the index.html of the app.
   window.loadURL(url.format({
@@ -27,7 +27,6 @@ function createWindow() {
 
   window.once('ready-to-show', () => {
     window.show()
-    /* child.show() */
   })
 }
 
