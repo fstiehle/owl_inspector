@@ -100,8 +100,7 @@ gulp.task('serve', gulp.parallel('dev-scripts',
 function bundleApp(_debug) {
 
   const files = [
-    './gui/src/renderer.jsx',
-    './gui/src/main.js'
+    './gui/src/renderer/renderer.jsx'
   ];
   
   const tasks = files.map((entry) => {
@@ -111,7 +110,8 @@ function bundleApp(_debug) {
     })
 
     .transform("babelify", { 
-      presets: ["env", "react"] })
+      presets: ["env", "react"],
+      sourceMaps: true })
     .bundle()
     .on('error', gutil.log)
     .pipe(source(entry))

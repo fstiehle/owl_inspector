@@ -2,7 +2,7 @@
   "name": "thesis",
   "version": "0.1.0",
   "description": "Experimental",
-  "main": "gui/dist/main.js",
+  "main": "gui/src/main.js",
   "keywords": [],
   "author": "fstiehle",
   "license": "ISC",
