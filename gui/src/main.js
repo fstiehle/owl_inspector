@@ -1,7 +1,8 @@
 // Handles the electron build
 const { app, BrowserWindow } = require('electron'),
   path = require('path'),
-  url = require('url')
+  url = require('url'),
+  SocketCommunication = require('./socket.js')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -20,7 +21,7 @@ function createWindow() {
 
   // and load the index.html of the app.
   window.loadURL(url.format({
-    pathname: path.join(__dirname, './dist/index.html'),
+    pathname: path.join(__dirname, '../dist/index.html'),
     protocol: 'file:',
     slashes: true
   }))
@@ -31,8 +32,5 @@ function createWindow() {
 }
 
 app.on('ready', createWindow)
-
-// listen on port
-
 
 // dispatch child processes 
