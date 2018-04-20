@@ -8,6 +8,7 @@ const gulp = require('gulp'),
   minify = require('gulp-minifier'),
   rename = require('gulp-rename'),
   es = require('event-stream'),
+  del = require('del'),
   runSequence = require('run-sequence');
 
 const DEV_DIR = 'gui/src',
@@ -19,26 +20,33 @@ gulp.task('dev-scripts', function () {
   return bundleApp(true);
 });
 
-gulp.task('prod-env', function () {
+gulp.task('prod-env', function (done) {
   process.env.NODE_ENV = 'production';
+  done();
 });
 
 gulp.task('prod-scripts', function () {
   return bundleApp(false);
 });
 
-gulp.task('webserver', function () {
+gulp.task('clean', function () {
+  return del([DIST_DIR + '/**/*']);
+});
+
+gulp.task('webserver', function (done) {
   connect.server({
     port: 8080,
     host: 'localhost',
     root: DIST_DIR,
     livereload: true
   });
+  done();
 });
 
 // Watches for changes in the DEV_DIR
-gulp.task('watch', () => {
-  gulp.watch([DEV_DIR + '/**/*'], ['dev-scripts', 'copy-static', 'sass']);
+gulp.task('watch', (done) => {
+  gulp.watch([DEV_DIR + '/**/*'], gulp.parallel('dev-scripts', 'copy-static', 'sass'));
+  done();
 });
 
 // Copies assets to the DIST folder
@@ -70,22 +78,22 @@ gulp.task('sass', function () {
 
 // Run this for the final build
 // Run 'minify' before the code is shiped
-gulp.task('build', function (cb) {
-  runSequence('prod-env', ['prod-scripts', 'copy-static', 'sass'], 'minify', cb);
-});
+gulp.task('build', gulp.parallel('prod-env', 'prod-scripts', 'copy-static', 'sass', 'minify'));
 
 // Aliase
-gulp.task('default', ['serve']);
-gulp.task('run', ['serve']);
+gulp.task('default', (done) => {
+  gulp.task('serve')
+  done()
+});
 
 // When running 'gulp' on the terminal this task will fire.
 // It will start watching for changes in every .js file.
 // If there's a change, the task 'watch' defined above will fire.
-gulp.task('serve', ['dev-scripts',
+gulp.task('serve', gulp.parallel('dev-scripts',
   'copy-static',
   'sass',
   'webserver',
-  'watch']);
+  'watch'));
 
 // Private Functions
 // ----------------------------------------------------------------------------
