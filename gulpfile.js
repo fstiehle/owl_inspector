@@ -6,6 +6,8 @@ const gulp = require('gulp'),
   connect = require('gulp-connect'),
   sass = require('gulp-sass'),
   minify = require('gulp-minifier'),
+  rename = require('gulp-rename'),
+  es = require('event-stream'),
   runSequence = require('run-sequence');
 
 const DEV_DIR = 'gui/src',
@@ -88,18 +90,32 @@ gulp.task('serve', ['dev-scripts',
 // Private Functions
 // ----------------------------------------------------------------------------
 function bundleApp(_debug) {
-  // Browserify will bundle all our js files together in to one
-  const bundler = browserify({
-    entries: DEV_DIR + '/app.jsx',
-    debug: _debug
-  })
-  // transform ES6 and JSX to ES5 with babelify	
-  .transform("babelify", { presets: ["env", "react"] })
 
-  return bundler
+  const files = [
+    './gui/src/renderer.jsx',
+    './gui/src/main.js'
+  ];
+  
+  const tasks = files.map((entry) => {
+    return browserify({ 
+      entries: [entry],
+      debug: _debug 
+    })
+
+    .transform("babelify", { 
+      presets: ["env", "react"] })
     .bundle()
     .on('error', gutil.log)
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest(DIST_DIR + '/js'))
+    .pipe(source(entry))
+    // rename them to have "bundle as postfix"
+    .pipe(rename({
+        dirname: '',
+        extname: '.bundle.js'
+    }))
+    .pipe(gulp.dest(DIST_DIR))
     .pipe(connect.reload());
+    });
+  // create a merged stream
+  return es.merge.apply(null, tasks);
 }
+
