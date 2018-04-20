@@ -16,24 +16,24 @@ const DEV_DIR = 'gui/src',
 
 // Gulp tasks
 // ----------------------------------------------------------------------------
-gulp.task('dev-scripts', function () {
+gulp.task('dev-scripts', () => {
   return bundleApp(true);
 });
 
-gulp.task('prod-env', function (done) {
+gulp.task('prod-env', (done) => {
   process.env.NODE_ENV = 'production';
   done();
 });
 
-gulp.task('prod-scripts', function () {
+gulp.task('prod-scripts', () => {
   return bundleApp(false);
 });
 
-gulp.task('clean', function () {
+gulp.task('clean', () => {
   return del([DIST_DIR + '/**/*']);
 });
 
-gulp.task('webserver', function (done) {
+gulp.task('webserver', (done) => {
   connect.server({
     port: 8080,
     host: 'localhost',
@@ -50,14 +50,14 @@ gulp.task('watch', (done) => {
 });
 
 // Copies assets to the DIST folder
-gulp.task('copy-static', function () {
+gulp.task('copy-static', () => {
   return gulp.src(DEV_DIR + '/static/**/*')
     .pipe(gulp.dest(DIST_DIR))
     .pipe(connect.reload());
 });
 
 // Run 'minify' for final shipable code
-gulp.task('minify', function () {
+gulp.task('minify', () => {
   return gulp.src(DIST_DIR + '/**/*').pipe(minify({
     minify: true,
     collapseWhitespace: true,
@@ -68,7 +68,7 @@ gulp.task('minify', function () {
 });
 
 // sass
-gulp.task('sass', function () {
+gulp.task('sass', () => {
   return gulp.src(DEV_DIR + '/sass/**/*.scss')
     .pipe(sass({includePaths: ['/sass/', 'node_modules']})
     .on('error', sass.logError))
