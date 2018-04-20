@@ -7,6 +7,9 @@ body {
 header {
   padding-top: 40px; /* Titlebar */
   -webkit-app-region: drag;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
 }
 
 .wrapper {
