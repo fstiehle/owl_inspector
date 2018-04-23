@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {HashRouter} from 'react-router-dom'
 
 // import React Components
 import Layout from './components/Layout.jsx';
 
-let app = document.getElementById('content');
-ReactDOM.render(<Layout />, app);
+ReactDOM.render(
+<HashRouter>
+  <Layout />
+</HashRouter>, 
+document.getElementById('content'));

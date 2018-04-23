@@ -1,4 +1,6 @@
 import React from 'react';
+import {Route, Switch} from 'react-router-dom'
+import Source from './Source.jsx'
 
 export default class Layout extends React.Component {
   render() {
@@ -6,7 +8,9 @@ export default class Layout extends React.Component {
       <header>
       </header>
       <div className="wrapper">
-        Hi
+        <Switch>
+          <Route path="/" exact component={Source} />
+        </Switch>
       </div>
     </div>;
   }
