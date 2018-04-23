@@ -11,8 +11,8 @@ const gulp = require('gulp'),
   del = require('del'),
   runSequence = require('run-sequence');
 
-const DEV_DIR = 'gui/src',
-  DIST_DIR = 'gui/dist';
+const DEV_DIR = './gui/src/renderer',
+  DIST_DIR = './gui/dist';
 
 // Gulp tasks
 // ----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ gulp.task('build', gulp.parallel('prod-env', 'prod-scripts', 'copy-static', 'sas
 
 // Aliase
 gulp.task('default', (done) => {
-  gulp.task('serve')
+  gulp.task('build')
   done()
 });
 
@@ -100,7 +100,7 @@ gulp.task('serve', gulp.parallel('dev-scripts',
 function bundleApp(_debug) {
 
   const files = [
-    './gui/src/renderer/renderer.jsx'
+    DEV_DIR + '/renderer.jsx'
   ];
   
   const tasks = files.map((entry) => {
