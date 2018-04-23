@@ -23,6 +23,6 @@ gulp.task('webserver', (done) => {
 gulp.task('watch', (done) => {
   gulp.watch([DEV_DIR + '/static/**/*'], gulp.task('copy-static'))
   gulp.watch([DEV_DIR + '/**/*.jsx', DEV_DIR + '/**/*.js'], gulp.task('dev-scripts'))
-  gulp.watch([DEV_DIR + '/sass/**/*.sass'], gulp.task( 'sass'))
+  gulp.watch([DEV_DIR + '/sass/**/*.scss'], gulp.task( 'sass'))
   done()
 })
