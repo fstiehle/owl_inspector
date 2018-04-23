@@ -7,7 +7,7 @@ const DEV_DIR = './gui/src/renderer/sass',
 
 gulp.task('sass', () => {
   return gulp.src(DEV_DIR + '/**/*.scss')
-    .pipe(sass({includePaths: [DEV_DIR]})
+    .pipe(sass({includePaths: [DEV_DIR, 'node_modules']})
     .on('error', sass.logError))
     .pipe(gulp.dest(DIST_DIR))
     .pipe(connect.reload())
