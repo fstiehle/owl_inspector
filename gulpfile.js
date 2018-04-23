@@ -1,6 +1,7 @@
 const gulp = require('gulp'),
   requireDir = require('require-dir')
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 requireDir('./tasks')
 
 gulp.task('default', gulp.task('build'))
