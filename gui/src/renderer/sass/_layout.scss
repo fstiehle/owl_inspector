@@ -1,7 +1,5 @@
-@import "_variables.scss";
-
 header {
-  padding-top: 40px; /* Titlebar */
+  padding-top: 45px; /* Titlebar */
   -webkit-app-region: drag;
   user-select: none;
   -webkit-user-select: none;
@@ -10,4 +8,8 @@ header {
 
 .wrapper {
   padding: 0 13px;
+}
+
+.content {
+  padding: 0px 15px;
 }

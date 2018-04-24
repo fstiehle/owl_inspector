@@ -1,0 +1,24 @@
+.panel {
+  padding: 15px;
+  background-color: $brand-light;
+  border-radius: 8px;
+
+  .items {
+    padding: 0 5px;
+  } 
+
+  a {
+    display: block;
+   
+    div {
+      display: inline-block;
+      padding: 6px 10px;
+    }
+  }
+}
+
+.active div {
+  background-color: $brand-highlight;
+  border-radius: 8px;
+}
+

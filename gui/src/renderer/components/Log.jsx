@@ -1,7 +1,7 @@
 import React from 'react';
 import Navigation from './Panel/Navigation.jsx'
 
-export default class Source extends React.Component {
+export default class Log extends React.Component {
 
   constructor(props) {
     super(props)
@@ -14,7 +14,7 @@ export default class Source extends React.Component {
       </div>
       <div className="col-xs-12 col-md-10 content">
         <div class="border-top">
-          Source  
+          Log
         </div>
       </div>     
     </div>;

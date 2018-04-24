@@ -1,8 +1,8 @@
 // Brand colors
-$brand-primary:         #f2761e;
+$brand-primary:         #f4891e;
 $brand-secondary:       #9b59b6;
 $brand-dark:            #191919;
-$brand-light:           #2b2b2b;
+$brand-light:           #212122;
 
 $color-success:         #4caf50;
 $color-info:            #5bc0de;
@@ -16,14 +16,13 @@ $gray-light:            #edf3f6;
 
 $text-gray:             #c3c3c3;
 
-$color-panel:           $brand-light;
-$color-highlight:       #505050;
+$brand-highlight:       #464646;
 
 $deep-blue:             #171722; // Deprecated
 $white:                 #ffffff;
 
 // Borders
-$border-color:          #465f78;
+$border-color:          $brand-light;
 
 // Shadows
 $shadow-color:          rgba(0, 0, 0, .2);
@@ -89,14 +88,14 @@ $screen-phone:               $screen-xs-min;
 
 // Small screen / tablet
 //** Deprecated `$screen-sm` as of v3.0.1
-$screen-sm:                  768px;
+$screen-sm:                  723px;
 $screen-sm-min:              $screen-sm;
 //** Deprecated `$screen-tablet` as of v3.0.1
 $screen-tablet:              $screen-sm-min;
 
 // Medium screen / desktop
 //** Deprecated `$screen-md` as of v3.0.1
-$screen-md:                  992px;
+$screen-md:                  $screen-sm;
 $screen-md-min:              $screen-md;
 //** Deprecated `$screen-desktop` as of v3.0.1
 $screen-desktop:             $screen-md-min;
@@ -122,7 +121,7 @@ $screen-md-max:              ($screen-lg-min - 1);
 $grid-columns:              12;
 
 // Padding between columns. Gets divided in half for the left and right.
-$grid-gutter-width:         30px;
+$grid-gutter-width:         0;
 
 // Navbar collapse (point at which the navbar becomes uncollapsed.)
 $grid-float-breakpoint:     $screen-sm-min;
