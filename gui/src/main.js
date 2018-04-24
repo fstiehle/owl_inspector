@@ -11,8 +11,10 @@ let window;
 function createWindow() {
   // Create the browser window.
   window = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    minWidth: 750,
+    height: 800,
+    minHeight: 450,
     show: false,
     titleBarStyle: "hiddenInset",
     vibrancy: "light",
