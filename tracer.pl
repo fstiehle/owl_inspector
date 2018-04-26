@@ -1,41 +1,61 @@
-% Vars is a list of Name-Variable pairs where Variable is a free variable
-% and Name is an atom or some other identifier for the variable.
+:- module(owl_tracer, [trace_vars/2]).
+
 :- use_module(library(clpfd)).
+:- use_module(library(error)).
 :- use_module(library(when)).
 
-trace_vars(Vars) :-
-  maplist(trace_var(Vars), Vars).
+% tracepoint(Name, Value, Domain, PossibleValues)
+% to_trace(Id, Name)
+:- dynamic
+  tracepoint/4,
+  to_trace/2.
 
-trace_var(Vars, Id-V) :-
-  when(ground(V), print_new_binding(Vars, Id-V)).
+% Associate Var with name and add to database
+trace_vars(Vars, Names) :-
+  maplist(trace_var, Vars, Names).
 
-print_new_binding(Vars, Id-V) :-
-  format('new binding ~w, all bindings now: ~w~n', [Id-V, Vars]).
+trace_var(Var, Name) :-
+  ( fd_var(Var) -> true 
+  ; type_error(fd_var, Var)
+  ),
+  term_string(Var, VarId),
+  assert(to_trace(VarId, Name)),
+  trace_unification(Var, Name).
 
-print_new_binding(_, Id-_) :-
-  format('undo binding for ~w~n', [Id]),
-  false.
+trace_unification(Var, Name) :-
+  when(ground(Var), print_binding(Var, Name)).
 
-% TODO: automatically trace domain change
-trace_domains(Vars) :-
-  maplist(trace_domain, Vars).
+print_binding(Var, Name) :- 
+  format('new binding for ~w: ~w~n', [Name, Var]).
 
-% TODO: Increment timestamp
-trace_domain(Var) :-
-  get_attr(Var, clpfd, Attribute),
-  Attribute =.. List,
-  nth0(4, List, Domain),
-  format('current domain for ~w is ~w~n', [Var, Domain]).
+print_binding(Var, Name) :-
+  format('undo binding for ~w~n', [Name]), !, fail.
 
-% TODO: Name variable via attributes
-% (Or instead of a-A, try [a, A] etc.)
+var_names([], []).
+var_names([Var|T1], [Name|T2]) :-
+  term_string(Var, VarId),
+  to_trace(VarId, Name),
+  var_names(T1, T2).
+
+trace_labeling(Goal) :-
+  current_predicate(labeling, Goal),
+  Goal =.. [Head, Opts, Vs],
+  var_names(Vs, Names),
+  maplist(trace_labeling(Head, Opts), Vs, Names).
+    
+trace_labeling(Head, Opts, Var, Name) :-
+  fd_dom(Var, Dom),
+  print_binding(Dom, Name),
+  call(Head, Opts, [Var]).
+
+% Quick Tests
 test_trace_vars() :-
-  Vars = [a-A,b-B,c-C], trace_vars(Vars), [A,B,C] ins 0..8,
-  A #< B,
-  B #< C, 
-  labeling([],[A,B,C]).
+  [A,B,C] ins 0..5,
+  trace_vars([A,B,C], ["A", "B","C"]),
+  B #> A,
+  C #> B,
+  trace_labeling(labeling([],[A,B,C])).
 
 test_trace_domains() :-
-  [A,B] ins 0..8,
-  A #< B,
-  trace_domains([A,B]).
+  [A,B] ins 0..1,
+  A #< B.
