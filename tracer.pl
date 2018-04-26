@@ -19,6 +19,7 @@ trace_var(Var, Name) :-
   ; type_error(fd_var, Var)
   ),
   term_string(Var, VarId),
+  \+to_trace(VarId, _),
   assert(to_trace(VarId, Name)),
   trace_unification(Var, Name).
 
