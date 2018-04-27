@@ -30,20 +30,12 @@ trace_constraint(Goal) :-
   call(Goal),
   term_string(Goal, CId),
   \+constraint(CId, _),
-  Goal =.. List,
-  trace_domain('T', List), !.
+  term_variables(Goal, List),
+  maplist(trace_domain(CId), List).
 
-trace_domain(_, []).
-trace_domain(CId, [Head|Tail]) :-
-  is_list(Head),
-  trace_domain(CId, Head),
-  trace_domain(CId, Tail).
-
-trace_domain(_, [Head|_]) :-
-  fd_var(Head).
-
-trace_domain(CId, [_|Tail]) :-
-  trace_domain(CId, Tail).
+trace_domain(CId, Head) :-
+  fd_var(Head),
+  write(Head).
 
 % Associate Var with name and add to database
 trace_vars(Vars, Names) :-
@@ -95,5 +87,5 @@ test_trace_vars() :-
   trace_labeling(labeling([],[A,B])).
 
 test_trace_domains() :-
-  '📌'([A,B] ins 0..1),
+  '📌'([A,B] ins 0..2),
   '📌'(A #< B).
