@@ -1,41 +1,99 @@
-% Vars is a list of Name-Variable pairs where Variable is a free variable
-% and Name is an atom or some other identifier for the variable.
+:- encoding(utf8).
+
+:- module(owl_tracer, [ 
+  trace_vars/2,
+  op(900, fx, [#, '📌']),
+  (#)/1,
+  trace_constraint/1,
+  trace_labeling/1
+]).
+
 :- use_module(library(clpfd)).
+:- use_module(library(error)).
 :- use_module(library(when)).
 
-trace_vars(Vars) :-
-  maplist(trace_var(Vars), Vars).
+% tracepoint(Name, Value, Domain, PossibleValues)
+% to_trace(Id, Name)
+:- dynamic
+  tracepoint/4,
+  to_trace/2,
+  constraint/2.
 
-trace_var(Vars, Id-V) :-
-  when(ground(V), print_new_binding(Vars, Id-V)).
+% Trace domain 
+'📌'(X) :- #(X).
+#(X) :- trace_constraint(X).
+trace_constraint(Goal) :-
+  % Todo how to check if it is a constraint operator?
+  ( current_predicate(_, Goal) -> true 
+  ; type_error(predicate_t, Goal)
+  ),
+  call(Goal),
+  term_string(Goal, CId),
+  \+constraint(CId, _),
+  Goal =.. List,
+  trace_domain('T', List), !.
 
-print_new_binding(Vars, Id-V) :-
-  format('new binding ~w, all bindings now: ~w~n', [Id-V, Vars]).
+trace_domain(_, []).
+trace_domain(CId, [Head|Tail]) :-
+  is_list(Head),
+  trace_domain(CId, Head),
+  trace_domain(CId, Tail).
 
-print_new_binding(_, Id-_) :-
-  format('undo binding for ~w~n', [Id]),
-  false.
+trace_domain(_, [Head|_]) :-
+  fd_var(Head).
 
-% TODO: automatically trace domain change
-trace_domains(Vars) :-
-  maplist(trace_domain, Vars).
+trace_domain(CId, [_|Tail]) :-
+  trace_domain(CId, Tail).
 
-% TODO: Increment timestamp
-trace_domain(Var) :-
-  get_attr(Var, clpfd, Attribute),
-  Attribute =.. List,
-  nth0(4, List, Domain),
-  format('current domain for ~w is ~w~n', [Var, Domain]).
+% Associate Var with name and add to database
+trace_vars(Vars, Names) :-
+  maplist(trace_var, Vars, Names).
 
-% TODO: Name variable via attributes
-% (Or instead of a-A, try [a, A] etc.)
+trace_var(Var, Name) :-
+  ( fd_var(Var) -> true 
+  ; type_error(fd_var, Var)
+  ),
+  term_string(Var, VarId),
+  \+to_trace(VarId, _),
+  assertz(to_trace(VarId, Name)),
+  trace_unification(Var, Name).
+
+trace_unification(Var, Name) :-
+  when(ground(Var), print_binding(Var, Name)).
+
+print_binding(Var, Name) :- 
+  format('new binding for ~w: ~w~n', [Name, Var]).
+
+print_binding(_, Name) :-
+  format('undo binding for ~w~n', [Name]), !, fail.
+
+var_names([], []).
+var_names([Var|T1], [Name|T2]) :-
+  term_string(Var, VarId),
+  to_trace(VarId, Name),
+  var_names(T1, T2).
+
+trace_labeling(Goal) :-
+  current_predicate(labeling, Goal),
+  Goal =.. [Head, Opts, Vs],
+  var_names(Vs, Names),
+  bagof([Names, Vs, Dom],
+    maplist(trace_labeling(Head, Opts), Vs, Names, Dom),
+    List),
+  write(List).
+    
+trace_labeling(Head, Opts, Var, Name, Dom) :-
+  fd_dom(Var, Dom),
+  print_binding(Dom, Name),
+  call(Head, Opts, [Var]).
+
+% Quick Tests
 test_trace_vars() :-
-  Vars = [a-A,b-B,c-C], trace_vars(Vars), [A,B,C] ins 0..8,
-  A #< B,
-  B #< C, 
-  labeling([],[A,B,C]).
+  [A,B] ins 0..3,
+  trace_vars([A,B], ["A", "B"]),
+  B #> A,
+  trace_labeling(labeling([],[A,B])).
 
 test_trace_domains() :-
-  [A,B] ins 0..8,
-  A #< B,
-  trace_domains([A,B]).
+  '📌'([A,B] ins 0..1),
+  '📌'(A #< B).
