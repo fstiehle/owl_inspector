@@ -42,20 +42,22 @@ trace_labeling(Goal) :-
   current_predicate(labeling, Goal),
   Goal =.. [Head, Opts, Vs],
   var_names(Vs, Names),
-  maplist(trace_labeling(Head, Opts), Vs, Names).
+  bagof([Names, Vs, Dom],
+    maplist(trace_labeling(Head, Opts), Vs, Names, Dom),
+    List),
+  write(List).
     
-trace_labeling(Head, Opts, Var, Name) :-
+trace_labeling(Head, Opts, Var, Name, Dom) :-
   fd_dom(Var, Dom),
   print_binding(Dom, Name),
   call(Head, Opts, [Var]).
 
 % Quick Tests
 test_trace_vars() :-
-  [A,B,C] ins 0..5,
-  trace_vars([A,B,C], ["A", "B","C"]),
+  [A,B] ins 0..3,
+  trace_vars([A,B], ["A", "B"]),
   B #> A,
-  C #> B,
-  trace_labeling(labeling([],[A,B,C])).
+  trace_labeling(labeling([],[A,B])).
 
 test_trace_domains() :-
   [A,B] ins 0..1,
