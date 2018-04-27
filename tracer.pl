@@ -1,4 +1,12 @@
-:- module(owl_tracer, [trace_vars/2]).
+:- encoding(utf8).
+
+:- module(owl_tracer, [ 
+  trace_vars/2,
+  op(900, fx, [#, '📌']),
+  (#)/1,
+  trace_constraint/1,
+  trace_labeling/1
+]).
 
 :- use_module(library(clpfd)).
 :- use_module(library(error)).
@@ -8,7 +16,34 @@
 % to_trace(Id, Name)
 :- dynamic
   tracepoint/4,
-  to_trace/2.
+  to_trace/2,
+  constraint/2.
+
+% Trace domain 
+'📌'(X) :- #(X).
+#(X) :- trace_constraint(X).
+trace_constraint(Goal) :-
+  % Todo how to check if it is a constraint operator?
+  ( current_predicate(_, Goal) -> true 
+  ; type_error(predicate_t, Goal)
+  ),
+  call(Goal),
+  term_string(Goal, CId),
+  \+constraint(CId, _),
+  Goal =.. List,
+  trace_domain('T', List), !.
+
+trace_domain(_, []).
+trace_domain(CId, [Head|Tail]) :-
+  is_list(Head),
+  trace_domain(CId, Head),
+  trace_domain(CId, Tail).
+
+trace_domain(_, [Head|_]) :-
+  fd_var(Head).
+
+trace_domain(CId, [_|Tail]) :-
+  trace_domain(CId, Tail).
 
 % Associate Var with name and add to database
 trace_vars(Vars, Names) :-
@@ -29,7 +64,7 @@ trace_unification(Var, Name) :-
 print_binding(Var, Name) :- 
   format('new binding for ~w: ~w~n', [Name, Var]).
 
-print_binding(Var, Name) :-
+print_binding(_, Name) :-
   format('undo binding for ~w~n', [Name]), !, fail.
 
 var_names([], []).
@@ -60,5 +95,5 @@ test_trace_vars() :-
   trace_labeling(labeling([],[A,B])).
 
 test_trace_domains() :-
-  [A,B] ins 0..1,
-  A #< B.
+  '📌'([A,B] ins 0..1),
+  '📌'(A #< B).
