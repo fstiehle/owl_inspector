@@ -2,7 +2,11 @@
 
 :- module(owl_tracer, [ 
   op(900, fx, [#, '📌']),
-  (#)/1
+  (#)/1,
+  (#)/2,
+  '📌'/1,
+  '📌'/2,
+  tracer/2
 ]).
 
 :- use_module(library(clpfd)).
@@ -40,18 +44,19 @@ tracer(Goal, Names) :-
   trace_constraint(Goal, Names).
 
 trace_constraint(Goal, Names) :-
-  call(Goal),  
+  % After variables are FD variables, ID stays the same.
   term_variables(Goal, Vars),
-  var_names(Vars, Names),
-  assert_constraint(Goal, Names),
-  term_string(Goal, ConstraintID),
+  ( maplist(fd_var, Vars) -> var_names(Vars, Names), call(Goal)
+  ; call(Goal), var_names(Vars, Names)
+  ),
+  assert_constraint(Goal, Names, ConstraintID),
   maplist(trace_var, Vars, Doms),
   write(Names),
   write(Vars),
   write(Doms).
   % TODO: assert tracepoint
 
-assert_constraint(Goal, Names) :-
+assert_constraint(Goal, Names, ConstraintID) :-
   term_string(Goal, ConstraintID),
   ( \+constraint(ConstraintID, _) -> true
   ; permission_error(apply_constraint_to_name, Goal, ConstraintID)
@@ -66,13 +71,6 @@ assert_constraint(Goal, Names) :-
 trace_var(Var, Dom) :-
   write("Trace Var..."),
   fd_dom(Var, Dom).
-
-  % TODO: Could've already been grounded!
-%  ( fd_var(Var) -> true 
-%  ; type_error(fd_var, Var)
- % ),
-  % assert var<->name into database
- % assert_var(ConstraintID, Var, Name).
 
 print_binding(Var, Name) :- 
   format('new binding for ~w: ~w~n', [Name, Var]).
@@ -126,5 +124,5 @@ test_trace_vars() :-
   '📌'(labeling([],[A,B]), ["A", "B"]).
 
 test_trace_domains() :-
-  '📌'([A,B] ins 0..2, ["A", "B"]),
+  '📌'([A,B] ins 0..1, ["A", "B"]),
   '📌'(A #< B).
