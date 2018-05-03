@@ -13,19 +13,22 @@
 :- use_module(library(error)).
 :- use_module(library(when)).
 
-% tracepoint(Name, Value, Domain, PossibleValues)
-% to_trace(Id, Name)
+% tracepoint(Name, Value, Domain)
+% to_trace(ID, Name)
+% constraint(ID, Names)
 :- dynamic
-  tracepoint/4,
+  tracepoint_constraint/4,
+  tracepoint_labeling/3,
   to_trace/2,
   constraint/2.
 
 % Trace Operators
 '📌'(Goal) :- #(Goal).
 '📌'(Goal, Names) :- #(Goal, Names).
-#(Goal) :- #(Goal, Names).
+#(Goal) :- #(Goal, _).
 
 #(Goal, Names) :- 
+  clean_database,
   nonvar(Goal),
   tracer(Goal, Names).
 
@@ -51,10 +54,7 @@ trace_constraint(Goal, Names) :-
   ),
   assert_constraint(Goal, Names, ConstraintID),
   maplist(trace_var, Vars, Doms),
-  write(Names),
-  write(Vars),
-  write(Doms).
-  % TODO: assert tracepoint
+  assertz(tracepoint_constraint(ConstraintID, Names, Vars, Doms)).
 
 assert_constraint(Goal, Names, ConstraintID) :-
   term_string(Goal, ConstraintID),
@@ -63,20 +63,10 @@ assert_constraint(Goal, Names, ConstraintID) :-
   ),
   assertz(constraint(ConstraintID, Names)).
 
-%trace_domain(CId, Head) :-
-%  fd_var(Head),
-%  write(Head).
-
-% Associate Var with name and add to database
+% Get Domain
 trace_var(Var, Dom) :-
   write("Trace Var..."),
   fd_dom(Var, Dom).
-
-print_binding(Var, Name) :- 
-  format('new binding for ~w: ~w~n', [Name, Var]).
-
-print_binding(_, Name) :-
-  format('undo binding for ~w~n', [Name]), !, fail.
 
 var_names(Vars, Names) :-
   ( nonvar(Names) -> assert_names(Vars, Names)
@@ -103,19 +93,21 @@ get_names([Var|T1], [Name|T2]) :-
 trace_labeling(Goal, Names) :-
   Goal =.. [Head, Opts, Vars],
   var_names(Vars, Names),
-  bagof([Names, Vars, Dom],
-    maplist(trace_labeling(Head, Opts), Vars, Names, Dom),
-    List),
-  write(List).
-    
-trace_labeling(Head, Opts, Var, Name, Dom) :-
+  maplist(trace_labeling(Head, Opts), Vars, Dom),
+  assertz(tracepoint_labeling(Names, Vars, Dom)).
+
+trace_labeling(Head, Opts, Var, Dom) :-
   fd_dom(Var, Dom),
-  % assert trace point, reuse trace_var function OR assert entire list?
-  %print_binding(Dom, Name),
   call(Head, Opts, [Var]).
 
 % TODO: fd_var, ground, etc,
 % Print when not fd_dom but grounded variable
+
+% Clean database
+clean_database :-
+  retractall(to_trace),
+  retractall(constraint),
+  retractall(tracepoint_constraint).
 
 % Quick Tests
 test_trace_vars() :-
