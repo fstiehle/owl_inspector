@@ -15,6 +15,7 @@
 :- use_module(library(http/json_convert)). 
 :- use_module(library(term_to_json)). 
 :- use_module(library(http/json)).
+:- use_module(owl_socket).
 
 :- json_object
   json_tracepoint_constraint(id:string, names:list(string), values:list(integer), domain:list(string)),
@@ -22,21 +23,24 @@
 
 % JSON conversion
 to_json(Json) :-
-    tracepoint_constraint(Id,Names,Values,Domains),
-    maplist(term_string, Domains, DomainsString),
-    maplist(term_string, Values, ValuesString),
-    prolog_to_json(
-      json_tracepoint_constraint(Id,Names,ValuesString,DomainsString),Json).
+  tracepoint_constraint(Id,Names,Values,Domains),
+  maplist(term_string, Domains, DomainsString),
+  maplist(term_string, Values, ValuesString),
+  prolog_to_json(
+    json_tracepoint_constraint(Id,Names,ValuesString,DomainsString),Json).
 
 to_json(Json) :-
-    tracepoint_labeling(Names,Values,Domains),
-    maplist(term_string, Domains, DomainsString),
-    prolog_to_json(
-      json_tracepoint_labeling(Names,Values,DomainsString),Json).
+  tracepoint_labeling(Names,Values,Domains),
+  maplist(term_string, Domains, DomainsString),
+  prolog_to_json(
+    json_tracepoint_labeling(Names,Values,DomainsString),Json).
 
-obtain_file :-
-  bagof(Json, to_json(Json), Bag),
-  json_write(current_output, Bag).
+obtain_file(Bag) :-
+  bagof(Json, to_json(Json), Bag).
+
+send_to_gui(Message) :-
+  open_connection(Out),
+  talk(Out, Message).
 
 % tracepoint(Name, Value, Domain)
 % to_trace(ID, Name)
