@@ -12,9 +12,7 @@
 :- use_module(library(clpfd)).
 :- use_module(library(error)).
 :- use_module(library(when)).
-:- use_module(library(http/json_convert)). 
-:- use_module(library(term_to_json)). 
-:- use_module(library(http/json)).
+:- use_module(library(http/json_convert)).
 :- use_module(owl_socket).
 
 :- json_object
