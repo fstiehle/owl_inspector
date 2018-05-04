@@ -12,6 +12,31 @@
 :- use_module(library(clpfd)).
 :- use_module(library(error)).
 :- use_module(library(when)).
+:- use_module(library(http/json_convert)). 
+:- use_module(library(term_to_json)). 
+:- use_module(library(http/json)).
+
+:- json_object
+  json_tracepoint_constraint(id:string, names:list(string), values:list(integer), domain:list(string)),
+  json_tracepoint_labeling(names:list(string), values:list(integer), domains:list(string)).
+
+% JSON conversion
+to_json(Json) :-
+    tracepoint_constraint(Id,Names,Values,Domains),
+    maplist(term_string, Domains, DomainsString),
+    maplist(term_string, Values, ValuesString),
+    prolog_to_json(
+      json_tracepoint_constraint(Id,Names,ValuesString,DomainsString),Json).
+
+to_json(Json) :-
+    tracepoint_labeling(Names,Values,Domains),
+    maplist(term_string, Domains, DomainsString),
+    prolog_to_json(
+      json_tracepoint_labeling(Names,Values,DomainsString),Json).
+
+obtain_file :-
+  bagof(Json, to_json(Json), Bag),
+  json_write(current_output, Bag).
 
 % tracepoint(Name, Value, Domain)
 % to_trace(ID, Name)
@@ -27,8 +52,7 @@
 '📌'(Goal, Names) :- #(Goal, Names).
 #(Goal) :- #(Goal, _).
 
-#(Goal, Names) :- 
-  clean_database,
+#(Goal, Names) :-
   nonvar(Goal),
   tracer(Goal, Names).
 
@@ -105,16 +129,22 @@ trace_labeling(Head, Opts, Var, Dom) :-
 
 % Clean database
 clean_database :-
-  retractall(to_trace),
-  retractall(constraint),
-  retractall(tracepoint_constraint).
+  retractall(to_trace(_,_)),
+  retractall(constraint(_,_)),
+  retractall(tracepoint_constraint(_,_,_,_)),
+  retractall(tracepoint_labeling(_,_,_)).
 
 % Quick Tests
 test_trace_vars() :-
-  [A,B] ins 0..3,
-  B #> A,
-  '📌'(labeling([],[A,B]), ["A", "B"]).
+  clean_database,
+  '📌'([A,B] ins 0..3, ["A", "B"]),
+  '📌'(B #> A),
+  '📌'(labeling([],[A,B])).
 
 test_trace_domains() :-
   '📌'([A,B] ins 0..1, ["A", "B"]),
   '📌'(A #< B).
+
+test(JSON) :-
+  test_trace_vars,
+  tracepoint_labeling(X,Y,Z), prolog_to_json(json_tracepoint_labeling(X, Y, Z), JSON).
