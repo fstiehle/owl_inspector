@@ -6,14 +6,14 @@
   (#)/2,
   '📌'/1,
   '📌'/2,
-  tracer/2
+  tracer/2,
+  obtain_file/1
 ]).
 
 :- use_module(library(clpfd)).
 :- use_module(library(error)).
 :- use_module(library(when)).
 :- use_module(library(http/json_convert)).
-:- use_module(owl_socket).
 
 :- json_object
   json_tracepoint_constraint(id:string, names:list(string), values:list(integer), domains:list(string)),
@@ -35,10 +35,6 @@ to_json(Json) :-
 
 obtain_file(Bag) :-
   bagof(Json, to_json(Json), Bag).
-
-send_to_gui(Message) :-
-  open_connection(Out),
-  talk(Out, Message).
 
 % tracepoint(Name, Value, Domain)
 % to_trace(ID, Name)
