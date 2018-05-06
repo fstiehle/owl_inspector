@@ -6,3 +6,8 @@
 @import "_layout.scss";
 @import "_panel.scss";
 @import "_title.scss";
+@import "_log.scss";
+
+// Fix for textarea color
+.textarea {
+  color: #fff; }

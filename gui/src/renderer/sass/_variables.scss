@@ -14,6 +14,39 @@ $brand-highlight:       #464646;
 // Borders
 $border-color:          $brand-light;
 
+$background-color-map: (
+  'primary':              $brand-primary,
+  'dark':                 $brand-dark,
+  'secondary':            $brand-secondary,
+  'white':                $white,
+  'success':              $color-success,
+  'info':                 $color-info,
+  'warning':              $color-warning,
+  'error':                $color-error,
+  'gray':                 $gray,
+  'gray-light':           $gray-light
+);
+
+// Badges
+$badge-bg:              $brand-light;
+$badges-color-map: (
+  primary:              $brand-primary,
+  secondary:            $brand-secondary,
+  dark:                 $brand-dark,
+  light:                $gray,
+  success:              $color-success,
+  error:                $color-error,
+  warning:              $color-warning
+);
+
+$button-bg-color:       $brand-primary;
+$button-border-color:   $body-bg;
+
+$form-bg-color:               $brand-light;
+
+$table-bg-color:        $brand-light;
+$table-header-bg-color: $body-bg;
+
 /**
  *  MEDIA QUERIES BREAKPOINTS
  */
@@ -39,3 +72,4 @@ $grid-gutter-width:         0;
 
 // Typography
 $basefont: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+$heading-font:          $basefont;

@@ -14,7 +14,7 @@ export default class Source extends React.Component {
       </div>
       <div className="col-xs-12 col-md-10 content">
         <div className="border-top">
-          Source  
+          <h1 className="text-medium text-gray">Source</h1>
         </div>
       </div>     
     </div>;

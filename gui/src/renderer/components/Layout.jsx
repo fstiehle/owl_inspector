@@ -37,7 +37,7 @@ export default class Layout extends React.Component {
     }
     this.setState({
       map: parser.map,
-      log: JSON.stringify(parser.map)
+      log: JSON.stringify(parser.map, null, 2)
     })
   }
 
