@@ -16,22 +16,32 @@
 :- use_module(library(http/json_convert)).
 
 :- json_object
-  json_tracepoint_constraint(id:string, names:list(string), values:list(integer), domains:list(string)),
-  json_tracepoint_labeling(names:list(string), values:list(integer), domains:list(string)).
+  json_tracepoint_constraint(
+    id:string,
+    names:list(string),
+    values:list(integer),
+    domains:list(string),
+    domainSizes:list(integer)
+  ),
+  json_tracepoint_labeling(names:list(string),
+    values:list(integer),
+    domains:list(string),
+    domainSizes:list(integer)
+  ).
 
 % JSON conversion
 to_json(Json) :-
-  tracepoint_constraint(Id,Names,Values,Domains),
+  tracepoint_constraint(Id,Names,Values,Domains,Sizes),
   maplist(term_string, Domains, DomainsString),
   maplist(term_string, Values, ValuesString),
   prolog_to_json(
-    json_tracepoint_constraint(Id,Names,ValuesString,DomainsString),Json).
+    json_tracepoint_constraint(Id,Names,ValuesString,DomainsString,Sizes),Json).
 
 to_json(Json) :-
-  tracepoint_labeling(Names,Values,Domains),
+  tracepoint_labeling(Names,Values,Domains,Sizes),
   maplist(term_string, Domains, DomainsString),
   prolog_to_json(
-    json_tracepoint_labeling(Names,Values,DomainsString),Json).
+    json_tracepoint_labeling(Names,Values,DomainsString,Sizes),Json).
 
 obtain_file(Bag) :-
   bagof(Json, to_json(Json), Bag).
@@ -40,8 +50,8 @@ obtain_file(Bag) :-
 % to_trace(ID, Name)
 % constraint(ID, Names)
 :- dynamic
-  tracepoint_constraint/4,
-  tracepoint_labeling/3,
+  tracepoint_constraint/5,
+  tracepoint_labeling/4,
   to_trace/2,
   constraint/2.
 
@@ -75,8 +85,8 @@ trace_constraint(Goal, Names) :-
   ; call(Goal), var_names(Vars, Names)
   ),
   assert_constraint(Goal, Names, ConstraintID),
-  maplist(trace_var, Vars, Doms),
-  assertz(tracepoint_constraint(ConstraintID, Names, Vars, Doms)).
+  maplist(trace_var, Vars, Doms, Sizes),
+  assertz(tracepoint_constraint(ConstraintID, Names, Vars, Doms, Sizes)).
 
 assert_constraint(Goal, Names, ConstraintID) :-
   term_string(Goal, ConstraintID),
@@ -86,8 +96,9 @@ assert_constraint(Goal, Names, ConstraintID) :-
   assertz(constraint(ConstraintID, Names)).
 
 % Get Domain
-trace_var(Var, Dom) :-
+trace_var(Var, Dom, Size) :-
   write("Trace Var..."),
+  fd_size(Var, Size),  
   fd_dom(Var, Dom).
 
 var_names(Vars, Names) :-
@@ -115,11 +126,12 @@ get_names([Var|T1], [Name|T2]) :-
 trace_labeling(Goal, Names) :-
   Goal =.. [Head, Opts, Vars],
   var_names(Vars, Names),
-  maplist(trace_labeling(Head, Opts), Vars, Dom),
-  assertz(tracepoint_labeling(Names, Vars, Dom)).
+  maplist(trace_labeling(Head, Opts), Vars, Dom, Size),
+  assertz(tracepoint_labeling(Names, Vars, Dom, Size)).
 
-trace_labeling(Head, Opts, Var, Dom) :-
+trace_labeling(Head, Opts, Var, Dom, Size) :-
   fd_dom(Var, Dom),
+  fd_size(Var, Size),
   call(Head, Opts, [Var]).
 
 % TODO: fd_var, ground, etc,
@@ -129,8 +141,8 @@ trace_labeling(Head, Opts, Var, Dom) :-
 clean_database :-
   retractall(to_trace(_,_)),
   retractall(constraint(_,_)),
-  retractall(tracepoint_constraint(_,_,_,_)),
-  retractall(tracepoint_labeling(_,_,_)).
+  retractall(tracepoint_constraint(_,_,_,_,_)),
+  retractall(tracepoint_labeling(_,_,_,_)).
 
 % Quick Tests
 test_trace_vars() :-

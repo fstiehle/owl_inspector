@@ -24,7 +24,8 @@ export default class Parser {
     for (const key in Json) {
       if (Json.hasOwnProperty(key)) {
         const element = Json[key]
-        if (!element["names"] || !element["values"] || !element["domains"]) {
+        if (!element["names"] || !element["values"] 
+        || !element["domains"] || !element["domainSizes"]) {
           throw new SyntaxError("JSON format error")
         }        
         if (element["id"]) {
@@ -44,7 +45,8 @@ export default class Parser {
           object["id"],
           object["names"][i],
           object["values"][i],
-          object["domains"][i]))
+          object["domains"][i],
+          object["domainSizes"][i]))
     }
   }
 
@@ -54,7 +56,8 @@ export default class Parser {
         .push(new Label(
           object["names"][i],
           object["values"][i],
-          object["domains"][i]))
+          object["domains"][i],
+          object["domainSizes"][i]))
     }
   }
 
