@@ -16,7 +16,7 @@
 :- use_module(owl_socket).
 
 :- json_object
-  json_tracepoint_constraint(id:string, names:list(string), values:list(integer), domain:list(string)),
+  json_tracepoint_constraint(id:string, names:list(string), values:list(integer), domains:list(string)),
   json_tracepoint_labeling(names:list(string), values:list(integer), domains:list(string)).
 
 % JSON conversion
