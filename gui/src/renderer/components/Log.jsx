@@ -15,7 +15,7 @@ export default class Log extends React.Component {
       <div className="col-xs-12 col-md-10 content">
         <div className="border-top">
           <h1 className="text-medium text-gray">Log</h1>
-          <textarea className="textarea log" value={this.props.log} />
+          <textarea className="textarea log" value={this.props.log || "No data obtained"} />
         </div>
       </div>     
     </div>;
