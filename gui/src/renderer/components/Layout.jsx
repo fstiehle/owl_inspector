@@ -3,16 +3,42 @@ import {Route, Switch} from 'react-router-dom'
 import Log from './Log.jsx'
 import Source from './Source.jsx'
 import Title from './Title.jsx'
+import Parser from './../Parser'
 
 export default class Layout extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {title: "Owl Inspector"}
+    this.socket = new WebSocket("ws://localhost:26878/socket")
+    this.state = {
+      title: "Owl Inspector",
+      map: {}
+    }
+
+    this.socket.onopen = () => {
+      this.socket.send('Ping')
+    }    
+    this.socket.onerror = (error) => {
+      console.log('WebSocket Error ' + error)
+    }    
+    this.socket.onmessage = this.handleData.bind(this)
   }
 
   setTitle(title) {
     this.setState({title})
+  }
+
+  handleData(message) {
+    let parser
+    try {
+      parser = new Parser(JSON.parse(message.data))
+    } catch (error) {
+      console.log('Error during JSON Parsing: ' + error)
+    }
+    this.setState({
+      map: parser.map,
+      log: JSON.stringify(parser.map)
+    })
   }
 
   render() {
@@ -22,10 +48,10 @@ export default class Layout extends React.Component {
       </header>
       <div className="wrapper">
         <Switch>
-          <Route path="/log" exact render={() => <Log setTitle={this.setTitle.bind(this)}/>}/>
+          <Route path="/log" exact render={() => <Log log={this.state.log} setTitle={this.setTitle.bind(this)}/>}/>
           <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>
-      </div>
+      </div>     
     </div>;
   }
 }

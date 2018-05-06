@@ -13,7 +13,7 @@ export default class Source extends React.Component {
         <Navigation />
       </div>
       <div className="col-xs-12 col-md-10 content">
-        <div class="border-top">
+        <div className="border-top">
           Source  
         </div>
       </div>     

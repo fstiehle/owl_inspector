@@ -13,8 +13,11 @@ export default class Log extends React.Component {
         <Navigation />
       </div>
       <div className="col-xs-12 col-md-10 content">
-        <div class="border-top">
-          Log
+        <div className="border-top">
+          <h1>Log</h1>
+          <textarea>
+            {this.props.log}
+          </textarea>
         </div>
       </div>     
     </div>;

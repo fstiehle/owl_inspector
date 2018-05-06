@@ -2,11 +2,11 @@
 const { app, BrowserWindow } = require('electron'),
   path = require('path'),
   url = require('url'),
-  SocketCommunication = require('./socket.js')
+  SocketServer = require('./socket.js')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let window;
+let window
 
 function createWindow() {
   // Create the browser window.
@@ -30,6 +30,7 @@ function createWindow() {
 
   window.once('ready-to-show', () => {
     window.show()
+    SocketServer.startServer(window)
   })
 }
 
