@@ -3,6 +3,7 @@ import {Route, Switch} from 'react-router-dom'
 import Log from './Log.jsx'
 import Source from './Source.jsx'
 import Title from './Title.jsx'
+import ConstraintView from './ConstraintView.jsx'
 import Parser from './../Parser'
 
 export default class Layout extends React.Component {
@@ -48,7 +49,8 @@ export default class Layout extends React.Component {
       </header>
       <div className="wrapper">
         <Switch>
-          <Route path="/log" exact render={() => <Log log={this.state.log} setTitle={this.setTitle.bind(this)}/>}/>
+          <Route path="/log" exact render={() => <Log log={this.state.log}/>}/>
+          <Route path="/constraints" exact render={() => <ConstraintView map={this.state.map}/>}/>
           <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>
       </div>     

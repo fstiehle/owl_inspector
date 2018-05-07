@@ -8,6 +8,9 @@ export default class Layout extends React.Component {
         <NavLink exact activeClassName="active" to="/">
           <div>Source</div>
         </NavLink>
+        <NavLink activeClassName="active" to="/constraints">
+          <div>Constraints</div>
+        </NavLink>
         <NavLink activeClassName="active" to="/log">
           <div>Log</div>
         </NavLink>
