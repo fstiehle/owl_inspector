@@ -102,7 +102,7 @@ trace_var(Var, Dom, Size) :-
 
 attr_unify_hook(Name, Var) :-
   ( nonvar(Var) -> true
-  ; get_attr(Var, owl_tracer, NewName), NewName==Name
+  ; write('Oha!'), get_attr(Var, owl_tracer, NewName), NewName==Name
   ).
 
 var_names(Vars, Names) :-
@@ -118,8 +118,10 @@ assert_name(Var, Name) :-
 
 get_names([], []).
 get_names([Var|T1], [Name|T2]) :-
-  get_attr(Var, owl_tracer, Name),
+  ( integer(Var) -> Name = Var
+  ; get_attr(Var, owl_tracer, Name)
   % TODO: Throw error when name not found
+  ),
   get_names(T1, T2).
 
 trace_labeling(Goal, Names) :-
