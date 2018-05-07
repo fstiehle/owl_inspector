@@ -52,7 +52,6 @@ obtain_file(Bag) :-
 :- dynamic
   tracepoint_constraint/5,
   tracepoint_labeling/4,
-  to_trace/2,
   constraint/2.
 
 % Trace Operators
@@ -101,6 +100,11 @@ trace_var(Var, Dom, Size) :-
   fd_size(Var, Size),  
   fd_dom(Var, Dom).
 
+attr_unify_hook(Name, Var) :-
+  ( nonvar(Var) -> true
+  ; get_attr(Var, owl_tracer, NewName), NewName==Name
+  ).
+
 var_names(Vars, Names) :-
   ( nonvar(Names) -> assert_names(Vars, Names)
   ; get_names(Vars, Names)
@@ -110,17 +114,12 @@ assert_names(Vars, Names) :-
   maplist(assert_name, Vars, Names).
 
 assert_name(Var, Name) :-
-  term_string(Var, VarID),
-  ( \+to_trace(VarID, _) -> true
-  ; permission_error(apply_var_to_name, Var, VarID)
-  ),
-  assertz(to_trace(VarID, Name)).
+  put_attr(Var, owl_tracer, Name).
 
 get_names([], []).
 get_names([Var|T1], [Name|T2]) :-
-  term_string(Var, VarId),
-  to_trace(VarId, Name),
-  % Throw error when name not found
+  get_attr(Var, owl_tracer, Name),
+  % TODO: Throw error when name not found
   get_names(T1, T2).
 
 trace_labeling(Goal, Names) :-
@@ -139,7 +138,6 @@ trace_labeling(Head, Opts, Var, Dom, Size) :-
 
 % Clean database
 clean_database :-
-  retractall(to_trace(_,_)),
   retractall(constraint(_,_)),
   retractall(tracepoint_constraint(_,_,_,_,_)),
   retractall(tracepoint_labeling(_,_,_,_)).
@@ -147,11 +145,13 @@ clean_database :-
 % Quick Tests
 test_trace_vars() :-
   clean_database,
-  '📌'([A,B] ins 0..3, ["A", "B"]),
+  '📌'([A,B,C] ins 0..3, ["A", "B", "C"]),
   '📌'(B #> A),
-  '📌'(labeling([],[A,B])).
+  '📌'(C #> B),
+  '📌'(labeling([],[A,B,C])).
 
 test_trace_domains() :-
+  clean_database,
   '📌'([A,B] ins 0..1, ["A", "B"]),
   '📌'(A #< B).
 
