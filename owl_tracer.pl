@@ -40,8 +40,9 @@ to_json(Json) :-
 to_json(Json) :-
   tracepoint_labeling(Names,Values,Domains,Sizes),
   maplist(term_string, Domains, DomainsString),
+  maplist(term_string, Values, ValuesString),
   prolog_to_json(
-    json_tracepoint_labeling(Names,Values,DomainsString,Sizes),Json).
+    json_tracepoint_labeling(Names,ValuesString,DomainsString,Sizes),Json).
 
 obtain_file(Bag) :-
   bagof(Json, to_json(Json), Bag).
@@ -78,14 +79,13 @@ tracer(Goal, Names) :-
   trace_constraint(Goal, Names).
 
 trace_constraint(Goal, Names) :-
-  % After variables are FD variables, ID stays the same.
   term_variables(Goal, Vars),
-  ( maplist(fd_var, Vars) -> var_names(Vars, Names), call(Goal)
-  ; call(Goal), var_names(Vars, Names)
-  ),
+  var_names(Vars, Names), !,
+  call(Goal),
   assert_constraint(Goal, Names, ConstraintID),
   maplist(trace_var, Vars, Doms, Sizes),
-  assertz(tracepoint_constraint(ConstraintID, Names, Vars, Doms, Sizes)).
+  assertz(tracepoint_constraint(
+    ConstraintID, Names, Vars, Doms, Sizes)).
 
 assert_constraint(Goal, Names, ConstraintID) :-
   term_string(Goal, ConstraintID),
@@ -102,7 +102,7 @@ trace_var(Var, Dom, Size) :-
 
 attr_unify_hook(Name, Var) :-
   ( nonvar(Var) -> true
-  ; write('Oha!'), get_attr(Var, owl_tracer, NewName), NewName==Name
+  ; get_attr(Var, owl_tracer, NewName), NewName==Name
   ).
 
 var_names(Vars, Names) :-
@@ -125,15 +125,22 @@ get_names([Var|T1], [Name|T2]) :-
   get_names(T1, T2).
 
 trace_labeling(Goal, Names) :-
-  Goal =.. [Head, Opts, Vars],
+  term_variables(Goal, Vars),
   var_names(Vars, Names),
-  maplist(trace_labeling(Head, Opts), Vars, Dom, Size),
-  assertz(tracepoint_labeling(Names, Vars, Dom, Size)).
+  maplist(trace_labeling(Vars, Names), Vars), !,
+  call(Goal).
 
-trace_labeling(Head, Opts, Var, Dom, Size) :-
+trace_labeling(AllVars, AllNames, Var) :-
+  when(ground(Var), assertz_labeling(AllVars, AllNames)).
+  
+% assert tracepoint
+assertz_labeling(AllVars, AllNames) :-
+  maplist(assertz_labeling, AllVars, Doms, Sizes),
+  assertz(tracepoint_labeling(AllNames, AllVars, Doms, Sizes)).
+
+assertz_labeling(Var, Dom, Size) :-
   fd_dom(Var, Dom),
-  fd_size(Var, Size),
-  call(Head, Opts, [Var]).
+  fd_size(Var, Size).
 
 % TODO: fd_var, ground, etc,
 % Print when not fd_dom but grounded variable
@@ -150,13 +157,10 @@ test_trace_vars() :-
   '📌'([A,B,C] ins 0..3, ["A", "B", "C"]),
   '📌'(B #> A),
   '📌'(C #> B),
-  '📌'(labeling([],[A,B,C])).
+  '📌'(labeling([ffc],[A,B,C])).
 
-test_trace_domains() :-
+test_trace() :-
   clean_database,
   '📌'([A,B] ins 0..1, ["A", "B"]),
-  '📌'(A #< B).
-
-test(JSON) :-
-  test_trace_vars,
-  tracepoint_labeling(X,Y,Z), prolog_to_json(json_tracepoint_labeling(X, Y, Z), JSON).
+  '📌'(A #< B),
+  '📌'(labeling([ffc],[A,B])).
