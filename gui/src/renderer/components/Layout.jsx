@@ -13,7 +13,10 @@ export default class Layout extends React.Component {
     this.socket = new WebSocket("ws://localhost:26878/socket")
     this.state = {
       title: "Owl Inspector",
-      map: {}
+      map: {},
+      // Timestamp from which to start, 0: show all
+      timeWind: 0,
+      windedMap: {}
     }
 
     this.socket.onopen = () => {
@@ -29,6 +32,18 @@ export default class Layout extends React.Component {
     this.setState({title})
   }
 
+  setTimeWind(timeWind) {
+    this.setState({timeWind})
+    this.timeWind(timeWind, this.state.windedMap)
+  }
+
+  /*
+   * Reduces map to the point of time
+   */
+  timeWind(time, map) {
+    
+  }
+
   handleData(message) {
     let parser
     try {
@@ -40,6 +55,7 @@ export default class Layout extends React.Component {
       map: parser.map,
       log: JSON.stringify(parser.map, null, 2)
     })
+    this.timeWind(this.state.timeWind, parser.map)
   }
 
   render() {
@@ -50,7 +66,7 @@ export default class Layout extends React.Component {
       <div className="wrapper">
         <Switch>
           <Route path="/log" exact render={() => <Log log={this.state.log}/>}/>
-          <Route path="/constraints" exact render={() => <ConstraintView map={this.state.map}/>}/>
+          <Route path="/constraints" exact render={() => <ConstraintView map={this.state.windedMap}/>}/>
           <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>
       </div>     
