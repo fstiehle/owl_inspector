@@ -19,12 +19,12 @@
   json_tracepoint_constraint(
     id:string,
     names:list(string),
-    values:list(integer),
+    values:list(string),
     domains:list(string),
     domainSizes:list(integer)
   ),
   json_tracepoint_labeling(names:list(string),
-    values:list(integer),
+    values:list(string),
     domains:list(string),
     domainSizes:list(integer)
   ).
