@@ -4,6 +4,7 @@ import Log from './Log.jsx'
 import Source from './Source.jsx'
 import Title from './Title.jsx'
 import ConstraintView from './ConstraintView.jsx'
+import SearchTree from './SearchTree.jsx'
 import Parser from './../Parser'
 import './../util.js'
 
@@ -92,6 +93,11 @@ export default class Layout extends React.Component {
               timeWind={this.state.timeWind}
               maxWind={this.state.maxWind}
             />}/>
+          <Route path="/search-tree" exact 
+            render={() => <SearchTree
+              names={this.state.names} 
+              map={this.state.windedMap}  
+          />}/>
           <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>
       </div>

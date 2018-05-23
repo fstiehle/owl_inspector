@@ -11,6 +11,9 @@ export default class Navigation extends React.Component {
         <NavLink activeClassName="active" to="/constraints">
           <div>Propagation</div>
         </NavLink>
+        <NavLink activeClassName="active" to="/search-tree">
+          <div>Search Tree</div>
+        </NavLink>
         <NavLink activeClassName="active" to="/log">
           <div>Log</div>
         </NavLink>

@@ -78,9 +78,9 @@ export default class ConstraintView extends React.Component {
           label: {
             textStyle: {
               fontSize: 20,
-              color: '#900'}},
+              color: '#f4891e'}},
           itemStyle: {
-            color: '#900'}
+            color: '#f4891e'}
         }
       }]
     }
