@@ -16,6 +16,7 @@
 :- use_module(library(http/json_convert)).
 
 :- json_object
+  json_variables(names:list(string)),
   json_tracepoint_constraint(
     id:string,
     names:list(string),
@@ -27,9 +28,13 @@
     values:list(string),
     domains:list(string),
     domainSizes:list(integer)
-  ).
+  ).  
 
 % JSON conversion
+to_json(Json) :-
+  variables(Names),
+  prolog_to_json(json_variables(Names), Json).
+
 to_json(Json) :-
   tracepoint_constraint(Id,Names,Values,Domains,Sizes),
   maplist(term_string, Domains, DomainsString),
@@ -53,7 +58,8 @@ obtain_file(Bag) :-
 :- dynamic
   tracepoint_constraint/5,
   tracepoint_labeling/4,
-  constraint/2.
+  constraint/2,
+  variables/1.
 
 % Trace Operators
 '📌'(Goal) :- #(Goal).
@@ -111,6 +117,7 @@ var_names(Vars, Names) :-
   ).
 
 assert_names(Vars, Names) :-
+  assertz(variables(Names)),
   maplist(assert_name, Vars, Names).
 
 assert_name(Var, Name) :-
@@ -147,6 +154,7 @@ assertz_labeling(Var, Dom, Size) :-
 
 % Clean database
 clean_database :-
+  retractall(variables(_)),
   retractall(constraint(_,_)),
   retractall(tracepoint_constraint(_,_,_,_,_)),
   retractall(tracepoint_labeling(_,_,_,_)).
