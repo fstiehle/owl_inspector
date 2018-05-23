@@ -3,44 +3,49 @@ import Label from "./model/Label"
 
 export default class Parser {
   constructor(Json) {
-    this.map = {}
-    this.setUp(Json)
-    this.parseJson(Json)
+    this.json = Json
+    this.map = []
+    this.vars = []
+    this.parseNames(Json[0])
+    this.parseData(Json.slice(1))
   }
 
-  setUp(Json) {
-    if (!Json[0]["names"]) {
-      throw new SyntaxError("JSON format error")
+  /**
+   * { names: [] }
+   */
+  parseNames(Json) {
+    if (Json["names"] && Json["names"].length > 0) {
+      this.vars = Json["names"]
+    } 
+    else {
+      throw new SyntaxError("JSON format error: Variable names need to be announced")
     }
-    for (const key in Json[0]["names"]) {
-      if (Json[0]["names"].hasOwnProperty(key)) {
-        const element = Json[0]["names"][key];
-        this.map[element] = []
+  }
+
+  parseData(Json) {
+    let timeStamps = Object.keys(Json).length;
+    if (timeStamps <= 0) {
+      throw new SyntaxError("JSON has no entries")
+    }
+    for (let i = 0; i < timeStamps; ++i) {
+      let element = Json[i]
+      if (!element["names"] || !element["values"] 
+      || !element["domains"] || !element["domainSizes"]) {
+        throw new SyntaxError("JSON format error")
+      }   
+      if (element["id"]) {
+        this.parseConstraint(element, i)
       }
+      else {
+        this.parseLabeling(element, i)
+      }        
     }
   }
 
-  parseJson(Json) {
-    for (const key in Json) {
-      if (Json.hasOwnProperty(key)) {
-        const element = Json[key]
-        if (!element["names"] || !element["values"] 
-        || !element["domains"] || !element["domainSizes"]) {
-          throw new SyntaxError("JSON format error")
-        }        
-        if (element["id"]) {
-          this.parseConstraint(element)
-        }
-        else {
-          this.parseLabeling(element)
-        }        
-      }
-    }
-  }
-
-  parseConstraint(object) {
+  parseConstraint(object, timeStamp) {
+    this.map[timeStamp] = []
     for (let i = 0; i < object["names"].length; ++i) {
-      this.map[object["names"][i]]
+      this.map[timeStamp]
         .push(new Constraint(
           object["id"],
           object["names"][i],
@@ -50,9 +55,10 @@ export default class Parser {
     }
   }
 
-  parseLabeling(object) {
+  parseLabeling(object, timeStamp) {
+    this.map[timeStamp] = []
     for (let i = 0; i < object["names"].length; ++i) {
-      this.map[object["names"][i]]
+      this.map[timeStamp]
         .push(new Label(
           object["names"][i],
           object["values"][i],

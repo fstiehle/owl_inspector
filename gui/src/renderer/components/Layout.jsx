@@ -13,10 +13,11 @@ export default class Layout extends React.Component {
     this.socket = new WebSocket("ws://localhost:26878/socket")
     this.state = {
       title: "Owl Inspector",
-      map: {},
+      map: [],
+      names: [],
       // Timestamp from which to start, 0: show all
       timeWind: 0,
-      windedMap: {}
+      windedMap: []
     }
 
     this.socket.onopen = () => {
@@ -41,7 +42,8 @@ export default class Layout extends React.Component {
    * Reduces map to the point of time
    */
   timeWind(time, map) {
-    
+    if (time >= 0 && time <= map.length)
+      this.setState({windedMap: map.slice(time)})
   }
 
   handleData(message) {
@@ -53,7 +55,8 @@ export default class Layout extends React.Component {
     }
     this.setState({
       map: parser.map,
-      log: JSON.stringify(parser.map, null, 2)
+      names: parser.vars,
+      log: parser.vars + "\n" + JSON.stringify(parser.map, null, 2)
     })
     this.timeWind(this.state.timeWind, parser.map)
   }
@@ -66,10 +69,11 @@ export default class Layout extends React.Component {
       <div className="wrapper">
         <Switch>
           <Route path="/log" exact render={() => <Log log={this.state.log}/>}/>
-          <Route path="/constraints" exact render={() => <ConstraintView map={this.state.windedMap}/>}/>
+          <Route path="/constraints" exact 
+            render={() => <ConstraintView names={this.state.names} map={this.state.windedMap}/>}/>
           <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>
-      </div>     
+      </div>
     </div>;
   }
 }
