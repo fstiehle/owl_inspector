@@ -1,5 +1,7 @@
 import React from 'react';
 import Navigation from './Panel/Navigation.jsx'
+import Variables from './Panel/Variables.jsx'
+import TimeWind from './Panel/TimeWind.jsx'
 import ReactEcharts from 'echarts-for-react';
 import 'echarts-gl';
 
@@ -22,14 +24,14 @@ export default class ConstraintView extends React.Component {
    */
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.map.length == prevState.map.length 
-      && nextProps.names.length == prevState.names.length) {
+      && nextProps.namesChecked.length == prevState.names.length) {
         return null
     }
-    let map = ConstraintView.generateDataMap(nextProps.names, nextProps.map)
-    let chartOption = ConstraintView.generateChartOption(nextProps.names, map)
+    let map = ConstraintView.generateDataMap(nextProps.namesChecked, nextProps.map)
+    let chartOption = ConstraintView.generateChartOption(nextProps.namesChecked, map)
     return {
       map: nextProps.map,
-      names: nextProps.names,
+      names: nextProps.namesChecked,
       data: map,
       chartOption: chartOption
     }
@@ -56,7 +58,10 @@ export default class ConstraintView extends React.Component {
       zAxis3D: { type: 'value' },
       grid3D: {
         boxWidth: 450,
-        boxDepth: 120
+        boxDepth: 120,
+        viewControl: {
+          projection: 'orthographic'
+        },
       },
       series: [{
         type: 'bar3D',
@@ -115,6 +120,9 @@ export default class ConstraintView extends React.Component {
     return <div className="split-view">
       <div className="col-xs-12 col-md-2">
         <Navigation />
+        <Variables toggleVar={this.props.toggleVar} 
+          namesChecked={this.state.names} 
+          names={this.props.names}/>
       </div>
       <div className="col-xs-12 col-md-10 content">
         <div className="border-top">
@@ -122,13 +130,9 @@ export default class ConstraintView extends React.Component {
           <ReactEcharts
             option={this.state.chartOption}
             style={{'minHeight': '75vh', width: '100%'}}
-            notMerge={true}
             lazyUpdate={true}
-            theme={"light"}
-            //onChartReady={this.onChartReadyCallback}
-            //onEvents={EventsDict}
-            //opts={} 
-          />
+            theme={"light"}/>
+          <TimeWind />
         </div>
       </div>
     </div>;

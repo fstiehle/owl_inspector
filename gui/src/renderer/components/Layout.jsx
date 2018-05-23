@@ -5,6 +5,7 @@ import Source from './Source.jsx'
 import Title from './Title.jsx'
 import ConstraintView from './ConstraintView.jsx'
 import Parser from './../Parser'
+import './../util.js'
 
 export default class Layout extends React.Component {
 
@@ -15,6 +16,7 @@ export default class Layout extends React.Component {
       title: "Owl Inspector",
       map: [],
       names: [],
+      namesChecked: [],
       // Timestamp from which to start, 0: show all
       timeWind: 0,
       windedMap: []
@@ -38,6 +40,14 @@ export default class Layout extends React.Component {
     this.timeWind(timeWind, this.state.windedMap)
   }
 
+  toggleVar(vari) {
+    if (this.state.namesChecked.includes(vari)) {
+      this.setState({namesChecked: this.state.namesChecked.remove(vari)})
+    } else {
+      this.setState({namesChecked: [...this.state.namesChecked, vari]})
+    }
+  }
+
   /*
    * Reduces map to the point of time
    */
@@ -56,6 +66,7 @@ export default class Layout extends React.Component {
     this.setState({
       map: parser.map,
       names: parser.vars,
+      namesChecked: parser.vars,
       log: parser.vars + "\n" + JSON.stringify(parser.map, null, 2)
     })
     this.timeWind(this.state.timeWind, parser.map)
@@ -70,7 +81,12 @@ export default class Layout extends React.Component {
         <Switch>
           <Route path="/log" exact render={() => <Log log={this.state.log}/>}/>
           <Route path="/constraints" exact 
-            render={() => <ConstraintView names={this.state.names} map={this.state.windedMap}/>}/>
+            render={() => <ConstraintView 
+              names={this.state.names} 
+              namesChecked={this.state.namesChecked} 
+              map={this.state.windedMap}
+              toggleVar={this.toggleVar.bind(this)}
+            />}/>
           <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>
       </div>

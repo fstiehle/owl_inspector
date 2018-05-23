@@ -1,7 +1,7 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom'
 
-export default class Layout extends React.Component {
+export default class Navigation extends React.Component {
   render() {
     return <div className="panel">
       <div className="items">
