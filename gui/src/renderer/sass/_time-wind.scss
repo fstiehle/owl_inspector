@@ -1,0 +1,25 @@
+.time-wind {
+  margin-top: 15px;
+}
+
+.input-range {
+  margin-bottom: 20px;
+}
+
+.input-range__slider {
+  background: $brand-primary;
+  border: 1px solid $brand-primary;
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+
+.input-range__track {
+  background: $text-gray;
+}
+
+.input-range__track--active {
+  background: $brand-primary;
+}
+
+.input-range__label {
+  color: $text-gray;
+}

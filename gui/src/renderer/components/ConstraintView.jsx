@@ -120,7 +120,8 @@ export default class ConstraintView extends React.Component {
     return <div className="split-view">
       <div className="col-xs-12 col-md-2">
         <Navigation />
-        <Variables toggleVar={this.props.toggleVar} 
+        <Variables 
+          toggleVar={this.props.toggleVar} 
           namesChecked={this.state.names} 
           names={this.props.names}/>
       </div>
@@ -129,10 +130,13 @@ export default class ConstraintView extends React.Component {
           <h1 className="text-medium text-gray">Constraint Propagation</h1>
           <ReactEcharts
             option={this.state.chartOption}
-            style={{'minHeight': '75vh', width: '100%'}}
+            style={{'minHeight': '70vh', width: '100%'}}
             lazyUpdate={true}
             theme={"light"}/>
-          <TimeWind />
+          <TimeWind 
+            timeWind={this.props.timeWind}
+            setTimeWind={this.props.setTimeWind}
+            maxWind={this.props.maxWind}/>
         </div>
       </div>
     </div>;

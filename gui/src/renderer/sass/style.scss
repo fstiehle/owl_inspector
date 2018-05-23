@@ -8,11 +8,13 @@
 @import "_title.scss";
 @import "_log.scss";
 @import "_constraint-view.scss";
+@import "node_modules/react-input-range/src/scss/input-range/input-range.scss";
+@import "_time-wind.scss";
 
 // Fix for textarea color
 .textarea {
   color: #fff; 
 }
-.checkbox {
+.checkbox:hover {
   cursor: pointer;
 }

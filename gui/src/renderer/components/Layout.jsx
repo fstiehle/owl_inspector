@@ -15,11 +15,11 @@ export default class Layout extends React.Component {
     this.state = {
       title: "Owl Inspector",
       map: [],
+      windedMap: [],
       names: [],
       namesChecked: [],
-      // Timestamp from which to start, 0: show all
-      timeWind: 0,
-      windedMap: []
+      timeWind: {min: 0, max: 0},
+      maxWind: 0      
     }
 
     this.socket.onopen = () => {
@@ -37,7 +37,7 @@ export default class Layout extends React.Component {
 
   setTimeWind(timeWind) {
     this.setState({timeWind})
-    this.timeWind(timeWind, this.state.windedMap)
+    this.timeWind(timeWind, this.state.map)
   }
 
   toggleVar(vari) {
@@ -52,8 +52,8 @@ export default class Layout extends React.Component {
    * Reduces map to the point of time
    */
   timeWind(time, map) {
-    if (time >= 0 && time <= map.length)
-      this.setState({windedMap: map.slice(time)})
+    if (time.min >= 0 && time.max <= map.length)
+      this.setState({windedMap: map.slice(time.min, time.max)})
   }
 
   handleData(message) {
@@ -65,11 +65,13 @@ export default class Layout extends React.Component {
     }
     this.setState({
       map: parser.map,
+      windedMap: parser.map,
       names: parser.vars,
       namesChecked: parser.vars,
-      log: parser.vars + "\n" + JSON.stringify(parser.map, null, 2)
+      log: parser.vars + "\n" + JSON.stringify(parser.map, null, 2),
+      timeWind: {min: 0, max: parser.map.length},
+      maxWind: parser.map.length
     })
-    this.timeWind(this.state.timeWind, parser.map)
   }
 
   render() {
@@ -86,6 +88,9 @@ export default class Layout extends React.Component {
               namesChecked={this.state.namesChecked} 
               map={this.state.windedMap}
               toggleVar={this.toggleVar.bind(this)}
+              setTimeWind={this.setTimeWind.bind(this)}
+              timeWind={this.state.timeWind}
+              maxWind={this.state.maxWind}
             />}/>
           <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>

@@ -39,10 +39,9 @@ const bundleApp = (_debug) => {
     })
     
     // for npm modules which import css in javascript
-    .transform(
-      {global: true}, 
-      "browserify-css", {
-       output: DIST_DIR + '/css/vendor.css'
+    .transform("browserify-css", {
+      global: true,
+      output: DIST_DIR + '/css/vendor.css'
     })
 
     .bundle()
