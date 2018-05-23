@@ -15,6 +15,9 @@
 .textarea {
   color: #fff; 
 }
-.checkbox:hover {
-  cursor: pointer;
+.checkbox label:hover {
+  cursor: pointer !important;
+}
+label {
+  transition: all 0.1s ease-out;
 }
