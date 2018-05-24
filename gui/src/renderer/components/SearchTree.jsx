@@ -1,5 +1,6 @@
 import React from 'react';
 import Navigation from './Panel/Navigation.jsx'
+import TimeWind from './Panel/TimeWind.jsx'
 import ReactEcharts from 'echarts-for-react';
 
 export default class SearchTree extends React.Component {
@@ -113,6 +114,10 @@ export default class SearchTree extends React.Component {
           style={{'minHeight': '70vh', width: '100%'}}
           lazyUpdate={true}
           theme={"light"}/>
+        <TimeWind
+          timeWind={this.props.timeWind}
+          setTimeWind={this.props.setTimeWind}
+          maxWind={this.props.maxWind}/>
       </div>
     </div>     
   </div>;

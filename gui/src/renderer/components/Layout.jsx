@@ -96,7 +96,10 @@ export default class Layout extends React.Component {
           <Route path="/search-tree" exact 
             render={() => <SearchTree
               names={this.state.names} 
-              map={this.state.windedMap}  
+              map={this.state.windedMap} 
+              setTimeWind={this.setTimeWind.bind(this)}
+              timeWind={this.state.timeWind}
+              maxWind={this.state.maxWind} 
           />}/>
           <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>
