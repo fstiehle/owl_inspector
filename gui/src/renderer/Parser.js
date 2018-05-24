@@ -5,6 +5,7 @@ export default class Parser {
   constructor(Json) {
     this.json = Json
     this.map = []
+    this.comparisons = []
     this.vars = []
     this.parseNames(Json[0])
     this.parseData(Json.slice(1))
@@ -29,17 +30,33 @@ export default class Parser {
     }
     for (let i = 0; i < timeStamps; ++i) {
       let element = Json[i]
-      if (!element["names"] || !element["values"] 
-      || !element["domains"] || !element["domainSizes"]) {
+
+      if (!element["names"]) {
         throw new SyntaxError("JSON format error")
-      }   
+      }
+
+      if (element["possibleValues"]) {
+        this.parseComparison(element)
+        continue
+      }
+
+      if (!element["values"] || !element["domains"] 
+        || !element["domainSizes"]) {
+        throw new SyntaxError("JSON format error")
+      }
       if (element["id"]) {
         this.parseConstraint(element, i)
-      }
-      else {
+      } else {
         this.parseLabeling(element, i)
       }        
     }
+  }
+
+  parseComparison(object) {
+    if (object.names.length !== 2) {
+      throw new SyntaxError("JSON format error")
+    }
+    this.comparisons.push(object)
   }
 
   parseConstraint(object, timeStamp) {

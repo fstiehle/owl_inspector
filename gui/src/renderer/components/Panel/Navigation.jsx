@@ -8,11 +8,14 @@ export default class Navigation extends React.Component {
         <NavLink exact activeClassName="active" to="/">
           <div>Source</div>
         </NavLink>
-        <NavLink activeClassName="active" to="/constraints">
+        <NavLink activeClassName="active" to="/propagation">
           <div>Propagation</div>
         </NavLink>
         <NavLink activeClassName="active" to="/search-tree">
           <div>Search Tree</div>
+        </NavLink>
+        <NavLink activeClassName="active" to="/constraints">
+          <div>Constraints</div>
         </NavLink>
         <NavLink activeClassName="active" to="/log">
           <div>Log</div>

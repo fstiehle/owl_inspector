@@ -1,9 +1,8 @@
-export default class Constraint {
-  constructor(id, name, value, domain, domainSize) {
+import Label from './Label.js'
+
+export default class Constraint extends Label {
+  constructor(id, name, value, domain, domainSize, possibleValues) {
+    super(name, value, domain, domainSize, possibleValues)
     this.id = id
-    this.name = name
-    this.value = value
-    this.domain = domain
-    this.domainSize = domainSize
   }
 }

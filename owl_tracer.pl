@@ -1,13 +1,15 @@
 :- encoding(utf8).
 
 :- module(owl_tracer, [ 
-  op(900, fx, [#, '📌']),
   (#)/1,
   (#)/2,
   '📌'/1,
   '📌'/2,
-  tracer/2,
-  obtain_file/1
+  '🔬'/2,
+  tracer/2,  
+  compare_against/2,
+  obtain_file/1,
+  clean_database/0
 ]).
 
 :- use_module(library(clpfd)).
@@ -24,11 +26,16 @@
     domains:list(string),
     domainSizes:list(integer)
   ),
-  json_tracepoint_labeling(names:list(string),
+  json_tracepoint_labeling(
+    names:list(string),
     values:list(string),
     domains:list(string),
     domainSizes:list(integer)
-  ).  
+  ),
+  json_compare_against(
+    names:list(string),
+    possibleValues:list(integer)
+  ). 
 
 % JSON conversion
 to_json(Json) :-
@@ -36,18 +43,23 @@ to_json(Json) :-
   prolog_to_json(json_variables(Names), Json).
 
 to_json(Json) :-
-  tracepoint_constraint(Id,Names,Values,Domains,Sizes),
+  tracepoint_constraint(
+    Id, Names, Values, Domains, Sizes),
   maplist(term_string, Domains, DomainsString),
   maplist(term_string, Values, ValuesString),
-  prolog_to_json(
-    json_tracepoint_constraint(Id,Names,ValuesString,DomainsString,Sizes),Json).
+  prolog_to_json(json_tracepoint_constraint(
+    Id, Names, ValuesString, DomainsString, Sizes), Json).
 
 to_json(Json) :-
-  tracepoint_labeling(Names,Values,Domains,Sizes),
+  tracepoint_labeling(Names, Values, Domains, Sizes),
   maplist(term_string, Domains, DomainsString),
   maplist(term_string, Values, ValuesString),
-  prolog_to_json(
-    json_tracepoint_labeling(Names,ValuesString,DomainsString,Sizes),Json).
+  prolog_to_json(json_tracepoint_labeling(
+    Names, ValuesString, DomainsString, Sizes), Json).
+
+to_json(Json) :-
+  cmp_against(Names, PossibleValues),
+  prolog_to_json(json_compare_against(Names, PossibleValues), Json).
 
 obtain_file(Bag) :-
   bagof(Json, to_json(Json), Bag).
@@ -59,12 +71,15 @@ obtain_file(Bag) :-
   tracepoint_constraint/5,
   tracepoint_labeling/4,
   constraint/2,
-  variables/1.
+  variables/1,
+  cmp_against/2.
 
 % Trace Operators
 '📌'(Goal) :- #(Goal).
 '📌'(Goal, Names) :- #(Goal, Names).
 #(Goal) :- #(Goal, _).
+
+'🔬'(Var1, Var2) :- compare_against(Var1, Var2).
 
 #(Goal, Names) :-
   nonvar(Goal),
@@ -99,6 +114,15 @@ assert_constraint(Goal, Names, ConstraintID) :-
   ; permission_error(apply_constraint_to_name, Goal, ConstraintID)
   ),
   assertz(constraint(ConstraintID, Names)).
+
+% For plot against feature
+compare_against(Var1, Var2) :-
+  possibleValues([Var1, Var2], PossibleValues),
+  var_names([Var1, Var2], Names),
+  assertz(cmp_against(Names, PossibleValues)).
+
+possibleValues(Vars, PossibleValues) :-
+  bagof(Vars, label(Vars), PossibleValues).
 
 % Get Domain
 trace_var(Var, Dom, Size) :-
@@ -142,12 +166,9 @@ trace_labeling(AllVars, AllNames, Var) :-
   
 % assert tracepoint
 assertz_labeling(AllVars, AllNames) :-
-  maplist(assertz_labeling, AllVars, Doms, Sizes),
-  assertz(tracepoint_labeling(AllNames, AllVars, Doms, Sizes)).
-
-assertz_labeling(Var, Dom, Size) :-
-  fd_dom(Var, Dom),
-  fd_size(Var, Size).
+  maplist(trace_var, AllVars, Doms, Sizes),
+  assertz(tracepoint_labeling(
+    AllNames, AllVars, Doms, Sizes)).
 
 % TODO: fd_var, ground, etc,
 % Print when not fd_dom but grounded variable
@@ -156,7 +177,7 @@ assertz_labeling(Var, Dom, Size) :-
 clean_database :-
   retractall(variables(_)),
   retractall(constraint(_,_)),
-  retractall(tracepoint_constraint(_,_,_,_,_)),
+  retractall(tracepoint_constraint(_,_,_,_,_,_)),
   retractall(tracepoint_labeling(_,_,_,_)).
 
 % Quick Tests
@@ -165,6 +186,7 @@ test_trace_vars() :-
   '📌'([A,B,C] ins 0..3, ["A", "B", "C"]),
   '📌'(B #> A),
   '📌'(C #> B),
+  compare_against(A, B),
   '📌'(labeling([ffc],[A,B,C])).
 
 test_trace() :-

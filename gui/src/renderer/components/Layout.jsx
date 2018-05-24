@@ -5,6 +5,7 @@ import Source from './Source.jsx'
 import Title from './Title.jsx'
 import ConstraintView from './ConstraintView.jsx'
 import SearchTree from './SearchTree.jsx'
+import Constraints from './Constraints.jsx'
 import Parser from './../Parser'
 import './../util.js'
 
@@ -67,6 +68,7 @@ export default class Layout extends React.Component {
     this.setState({
       map: parser.map,
       windedMap: parser.map,
+      comparisons: parser.comparisons,
       names: parser.vars,
       namesChecked: parser.vars,
       log: parser.vars + "\n" + JSON.stringify(parser.map, null, 2),
@@ -83,7 +85,7 @@ export default class Layout extends React.Component {
       <div className="wrapper">
         <Switch>
           <Route path="/log" exact render={() => <Log log={this.state.log}/>}/>
-          <Route path="/constraints" exact 
+          <Route path="/propagation" exact 
             render={() => <ConstraintView 
               names={this.state.names} 
               namesChecked={this.state.namesChecked} 
@@ -100,6 +102,11 @@ export default class Layout extends React.Component {
               setTimeWind={this.setTimeWind.bind(this)}
               timeWind={this.state.timeWind}
               maxWind={this.state.maxWind} 
+          />}/>
+          <Route path="/constraints" exact 
+            render={() => <Constraints
+              namesChecked={this.state.namesChecked} 
+              comparisons={this.state.comparisons} 
           />}/>
           <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>
