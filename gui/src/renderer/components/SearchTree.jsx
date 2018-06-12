@@ -24,38 +24,70 @@ export default class SearchTree extends React.Component {
     return tree
   } 
 
+  generateChild(tree, grounded, values, names) {
+    const valueNames = values.map(value => {
+      if (value.startsWith("_")) {
+        return "ungrounded"
+      } else {
+        return value;
+      }
+    })
+    return {
+      name: grounded.toString(),
+      data: grounded,
+      info: {
+        values: valueNames,
+        names: names
+      }
+    }
+  }
+
   insertIntoDataMapR(element, tree) {
-    const valueMap = element.map(label => label.value)
-      .filter(value => !value.startsWith("_"))
+    const values = element.map(label => label.value)
+    const grounded = values.filter(value => !value.startsWith("_"))
+    const names = element.map(label => label.name)
 
     if (!tree.children) {
-      tree.children = [{
-        name: valueMap.toString(),
-        data: valueMap }]
+      tree.children = [this.generateChild(tree, 
+        grounded,
+        values,
+        names
+      )]
       return
     }
     
     for (const key in tree.children) {
       if (tree.children.hasOwnProperty(key)) {
         const child = tree.children[key]
-        let isEvery = child.data.every(item => valueMap.includes(item))
+        let isEvery = child.data.every(item => grounded.includes(item))
         if (isEvery) {
           return this.insertIntoDataMapR(element, child)
         }        
       }
     }
     // no matching child found, add new
-    tree.children.push({
-      name: valueMap.toString(),
-      data: valueMap })
- 
+    tree.children.push(this.generateChild(tree, 
+      grounded,
+      values,
+      names))
   }
 
   generateChartOption(names, map) {
     if (map.length <= 0)
       return {}
     return {
-      tooltip: {},         
+      tooltip: {
+        formatter: (param) => {
+          const data = param.data
+          if (data.info.values.length !== data.info.names.length) {
+            return "Missformed data"
+          }
+          let string = "<b>Variables</b><br/>"
+          for (let i = 0; i < data.info.values.length; i++) {
+            string += `${data.info.names[i]}: ${data.info.values[i]}<br/>`
+          }
+          return string
+        }},        
       series: [{
         type: 'tree',
         data: [map],
@@ -78,8 +110,7 @@ export default class SearchTree extends React.Component {
             verticalAlign: 'middle',
             align: 'left',
             fontSize: 14
-          }
-        },
+        }},
         leaves: {
           itemStyle: {
             color: '#f4891e'

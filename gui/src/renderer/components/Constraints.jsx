@@ -87,7 +87,6 @@ export default class Constraints extends React.Component {
     console.log(data)
 
     return {
-      tooltip: {},
       grid: {
         height: '50%',
         y: '10%'
@@ -98,15 +97,14 @@ export default class Constraints extends React.Component {
       yAxis: {
         type: 'category'
       },
+      textStyle : {
+        color: "#fff"
+      },
       series: [{
-        name: 'Punch Card',
+        name: 'Labeling',
         type: 'heatmap',
+        color: ["#3c8d40"],
         data: data,
-        label: {
-          normal: {
-            show: true
-          }
-        },
         itemStyle: {
           emphasis: {
             shadowBlur: 10,

@@ -63,6 +63,7 @@ export default class ConstraintView extends React.Component {
           projection: 'orthographic'
         },
       },
+      textStyle : { color: "#fffff" },
       series: [{
         type: 'bar3D',
         data: map.map(item => {
@@ -77,10 +78,7 @@ export default class ConstraintView extends React.Component {
         emphasis: {
           label: {
             textStyle: {
-              fontSize: 20,
-              color: '#f4891e'}},
-          itemStyle: {
-            color: '#f4891e'}
+              fontSize: 20 }}
         }
       }]
     }
