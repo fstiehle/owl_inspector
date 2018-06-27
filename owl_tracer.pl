@@ -39,8 +39,9 @@
 
 % JSON conversion
 to_json(Json) :-
-  variables(Names),
-  prolog_to_json(json_variables(Names), Json).
+  bagof(Names, variables(Names), Bag),  
+  append(Bag, List),
+  prolog_to_json(json_variables(List), Json).
 
 to_json(Json) :-
   tracepoint_constraint(
@@ -192,5 +193,6 @@ test_trace_vars() :-
 test_trace() :-
   clean_database,
   '📌'([A,B] ins 0..1, ["A", "B"]),
+  '📌'([C,D] ins 0..3, ["C", "D"]),
   '📌'(A #< B),
-  '📌'(labeling([ffc],[A,B])).
+  '📌'(labeling([ffc],[A,B,C,D])).
