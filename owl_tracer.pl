@@ -9,7 +9,8 @@
   tracer/2,  
   compare_against/2,
   obtain_file/1,
-  clean_database/0
+  clean_database/0,
+  abc_names/2
 ]).
 
 :- use_module(library(clpfd)).
@@ -102,6 +103,7 @@ tracer(Goal, Names) :-
 
 trace_constraint(Goal, Names) :-
   term_variables(Goal, Vars),
+  write(Vars),
   var_names(Vars, Names), !,
   call(Goal),
   assert_constraint(Goal, Names, ConstraintID),
@@ -146,6 +148,7 @@ assert_names(Vars, Names) :-
   maplist(assert_name, Vars, Names).
 
 assert_name(Var, Name) :-
+  % TODO: Throw error when name already assigned
   put_attr(Var, owl_tracer, Name).
 
 get_names([], []).
@@ -181,6 +184,36 @@ clean_database :-
   retractall(tracepoint_constraint(_,_,_,_,_,_)),
   retractall(tracepoint_labeling(_,_,_,_)).
 
+% generate variable names
+abc_names(Number, Result) :-
+  I is ceiling(Number / 26),
+  findnsols(I, R, abc_names(R), List),
+  append(List, List2),
+  take(Number, List2, Result), !.
+
+abc_names(Result) :-
+  length(Result, 26), 
+  is_+integer(N),
+  term_string(N, Postfix),
+  generate_abc(Postfix, Result).
+
+generate_abc(Postfix, Result) :-
+  char_code("A", ACode),
+  char_code("Z", ZCode),
+  atom_codes(Postfix, PCode),
+  bagof(C, between(ACode, ZCode, C), Bag),
+  maplist(postfix_codes(PCode), Bag, Result).
+
+postfix_codes(Postfix, C, String) :-    
+  append([[C], Postfix], List),
+  atom_codes(String, List).
+
+take(N, List, Result) :- 
+  findnsols(N, Ele, member(Ele, List), Result), !.
+
+is_+integer(1).
+is_+integer(N) :- is_+integer(X), N is X + 1.
+
 % Quick Tests
 test_trace_vars() :-
   clean_database,
@@ -188,11 +221,8 @@ test_trace_vars() :-
   '📌'(B #> A),
   '📌'(C #> B),
   compare_against(A, B),
-  '📌'(labeling([ffc],[A,B,C])).
+  '📌'(labeling([],[A,B,C])).
 
 test_trace() :-
-  clean_database,
-  '📌'([A,B] ins 0..1, ["A", "B"]),
-  '📌'([C,D] ins 0..3, ["C", "D"]),
-  '📌'(A #< B),
-  '📌'(labeling([ffc],[A,B,C,D])).
+  '📌'(X in 1..2, ["A"]),
+  '📌'(all_distinct([X,Y,Z])).
