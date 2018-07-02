@@ -10,7 +10,9 @@
   compare_against/2,
   obtain_file/1,
   clean_database/0,
-  abc_names/2
+  abc_names/2,
+  abc_names_from_term/2,
+  assert_name/2
 ]).
 
 :- use_module(library(clpfd)).
@@ -103,7 +105,6 @@ tracer(Goal, Names) :-
 
 trace_constraint(Goal, Names) :-
   term_variables(Goal, Vars),
-  write(Vars),
   var_names(Vars, Names), !,
   call(Goal),
   assert_constraint(Goal, Names, ConstraintID),
@@ -155,7 +156,8 @@ get_names([], []).
 get_names([Var|T1], [Name|T2]) :-
   ( integer(Var) -> Name = Var
   ; get_attr(Var, owl_tracer, Name)
-  % TODO: Throw error when name not found
+  % TODO: Throw error when name not found,
+  % Error: variables and names given/not given
   ),
   get_names(T1, T2).
 
@@ -185,6 +187,11 @@ clean_database :-
   retractall(tracepoint_labeling(_,_,_,_)).
 
 % generate variable names
+abc_names_from_term(Term, Result) :-
+  term_variables(Term, Vars),
+  length(Vars, L),
+  abc_names(L, Result).
+
 abc_names(Number, Result) :-
   I is ceiling(Number / 26),
   findnsols(I, R, abc_names(R), List),
