@@ -59,6 +59,7 @@ export default class Layout extends React.Component {
   }
 
   handleData(message) {
+    console.log(message)
     let parser
     try {
       parser = new Parser(JSON.parse(message.data))

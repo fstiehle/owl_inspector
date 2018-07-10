@@ -1,4 +1,4 @@
-@import "_reset.scss";
+
 @import "node_modules/sierra-library/src/_variables.scss";
 @import "_variables.scss";
 @import "node_modules/sierra-library/src/_library.scss";
@@ -10,6 +10,9 @@
 @import "_constraint-view.scss";
 @import "node_modules/react-input-range/src/scss/input-range/input-range.scss";
 @import "_time-wind.scss";
+@import "node_modules/codemirror/lib/codemirror";
+@import "node_modules/codemirror/theme/base16-dark";
+@import "_source.scss";
 
 // Fix for textarea color
 .textarea {
@@ -20,4 +23,21 @@
 }
 label {
   transition: all 0.1s ease-out;
+}
+pre {
+  margin: 0 !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: $brand-primary;
+  outline: 1px solid $brand-light;
 }

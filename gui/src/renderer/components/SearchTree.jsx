@@ -142,7 +142,7 @@ export default class SearchTree extends React.Component {
         <h1 className="text-medium text-gray">Search tree</h1>
         <ReactEcharts
           option={this.generateChartOption(this.props.names, map)}
-          style={{'minHeight': '70vh', width: '100%'}}
+          style={{'height': '63vh', width: '100%'}}
           lazyUpdate={true}
           theme={"light"}/>
         <TimeWind

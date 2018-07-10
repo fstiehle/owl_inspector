@@ -41,9 +41,10 @@ export default class ConstraintView extends React.Component {
     return {
       tooltip: {
         formatter: (param) => {
-          return `Var: ${param.data.info[0]}<br />
-            Domain: ${param.data.info[1]}<br />
-            Value: ${param.data.info[2]}`
+          return `Event: ${param.data.info[0]}<br />
+            Var: ${param.data.info[1]}<br />
+            Domain: ${param.data.info[2]}<br />
+            Value: ${param.data.info[3]}`
         }},
       visualMap: {
         max: 10,
@@ -100,11 +101,20 @@ export default class ConstraintView extends React.Component {
         } else {
           value = element.value;
         }
+
+        let event;
+        if (element.id) {
+          event = element.id
+        } else {
+          event = "ground";
+        }
+
         newMap.push(
           { data: [i,
             names.indexOf(element.name),
             element.domainSize],
-            info: [ element.name,
+            info: [ event,
+              element.name,
               element.domain,
               value
             ]
@@ -128,7 +138,7 @@ export default class ConstraintView extends React.Component {
           <h1 className="text-medium text-gray">Constraint Propagation</h1>
           <ReactEcharts
             option={this.state.chartOption}
-            style={{'minHeight': '70vh', width: '100%'}}
+            style={{'height': '63vh', width: '100%'}}
             lazyUpdate={true}
             theme={"light"}/>
           <TimeWind 
