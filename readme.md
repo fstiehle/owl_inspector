@@ -1,4 +1,4 @@
-Owl Tracer is a web based visualisation software for SWI-Prolog’s CLP(FD) library.
+Owl Inspector is a web based visualization software for SWI-Prolog’s CLP(FD) library.
 
 Take a look at the `examples` folder to get a quick overview of what's possible.
 
