@@ -20,8 +20,7 @@
 :- ensure_loaded([owl_server]).
 
 :- dynamic
-  tracepoint_goal/5,
-  tracepoint/4,
+  tracepoint/5,
   variables/1.
 
 /* ------------------ 
@@ -46,17 +45,16 @@ owl_file(Bag) :-
   bagof(Json, to_json(Json), Bag).
 
 owl_send :-
-  talk.
+  start_server ; talk.
 
 owl_clean :-
   retractall(variables(_)),
-  retractall(tracepoint_goal(_,_,_,_,_)),
-  retractall(tracepoint(_,_,_,_)).
+  retractall(tracepoint(_,_,_,_,_)).
 
 owl_names_from_term(Term, Result, Postfix) :-
   term_variables(Term, Vars),
   length(Vars, L),
-  abc_names(L, Result, Postfix).
+  owl_gen_names(L, Result, Postfix).
 
 owl_gen_names(Number, Result, Postfix) :-
   I is ceiling(Number / 26),
@@ -65,10 +63,10 @@ owl_gen_names(Number, Result, Postfix) :-
   take(Number, List2, Result).
 
 owl_names_from_term(Term, Result) :-
-  abc_names_from_term(Term, Result, _).
+  owl_names_from_term(Term, Result, _).
 
 owl_gen_names(Number, Result) :-
-  abc_names(Number, Result, _).
+  owl_gen_names(Number, Result, _).
 
 /* ------------------ 
  * Private predicates
@@ -80,7 +78,7 @@ trace_goal(Goal) :-
   var_names(Vars, Names), % obacht!
   call(Goal),
   maplist(trace_var, Vars, Doms, Sizes),
-  assertz(tracepoint_goal(
+  assertz(tracepoint(
     GoalName, Names, Vars, Doms, Sizes)).
 
 %% goal_name(+Goal, -Name)
@@ -103,7 +101,7 @@ trace_ground(AllVars, AllNames, Var) :-
 % trace_ground(+AllVars, +AllNames)
 trace_ground(Vars, Names) :-
   maplist(trace_var, Vars, Doms, Sizes),
-  assertz(tracepoint_labeling(
+  assertz(tracepoint("Ground",
     Names, Vars, Doms, Sizes)).
 
 %% trace_var(+Var, -Dom, -Size)
