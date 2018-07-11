@@ -129,25 +129,24 @@ export default class SearchTree extends React.Component {
 
   render() {
     const map = this.generateDataMap(this.props.names, this.props.map)
-    console.log(map)
     return <div className="split-view">
-    <div className="col-xs-12 col-md-2">
-      <Navigation />
-    </div>
-    <div className="col-xs-12 col-md-10 content">
-      <div className="border-top">
-        <h1 className="text-medium text-gray">Search tree</h1>
-        <ReactEcharts
-          option={this.generateChartOption(this.props.names, map)}
-          style={{'height': '63vh', width: '100%'}}
-          lazyUpdate={true}
-          theme={"light"}/>
-        <TimeWind
-          timeWind={this.props.timeWind}
-          setTimeWind={this.props.setTimeWind}
-          maxWind={this.props.maxWind}/>
+      <div className="col-xs-12 col-md-2">
+        <Navigation />
       </div>
-    </div>     
-  </div>;
+      <div className="col-xs-12 col-md-10 content">
+        <div className="border-top">
+          <h1 className="text-medium text-gray">Search tree</h1>
+          <ReactEcharts
+            option={this.generateChartOption(this.props.names, map)}
+            style={{'height': '63vh', width: '100%'}}
+            lazyUpdate={true}
+            theme={"light"}/>
+          <TimeWind
+            timeWind={this.props.timeWind}
+            setTimeWind={this.props.setTimeWind}
+            maxWind={this.props.maxWind}/>
+        </div>
+      </div>     
+    </div>;
   }
 }
