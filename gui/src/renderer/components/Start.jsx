@@ -1,7 +1,7 @@
 import React from 'react';
 import Navigation from './Panel/Navigation.jsx'
 
-export default class Log extends React.Component {
+export default class Start extends React.Component {
 
   constructor(props) {
     super(props)
@@ -14,9 +14,8 @@ export default class Log extends React.Component {
       </div>
       <div className="col-xs-12 col-md-10 content">
         <div className="border-top">
-          <h1 className="text-medium text-gray">Trace</h1>
-          <textarea readOnly className="textarea log" value={this.props.log || "No data obtained"} />
-        </div>
+          <h1 className="text-medium text-gray">Start</h1>
+          </div>
       </div>     
     </div>;
   }

@@ -5,7 +5,7 @@ import TimeWind from './Panel/TimeWind.jsx'
 import ReactEcharts from 'echarts-for-react';
 import 'echarts-gl';
 
-export default class ConstraintView extends React.Component {
+export default class Propagation extends React.Component {
 
   constructor(props) {
     super(props)

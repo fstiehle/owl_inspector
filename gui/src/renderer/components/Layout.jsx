@@ -1,11 +1,10 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom'
 import Log from './Log.jsx'
-import Source from './Source.jsx'
+import Start from './Start.jsx'
 import Title from './Title.jsx'
-import ConstraintView from './ConstraintView.jsx'
+import Propagation from './Propagation.jsx'
 import SearchTree from './SearchTree.jsx'
-import Constraints from './Constraints.jsx'
 import Parser from './../Parser'
 import './../util.js'
 
@@ -87,7 +86,7 @@ export default class Layout extends React.Component {
         <Switch>
           <Route path="/log" exact render={() => <Log log={this.state.log}/>}/>
           <Route path="/propagation" exact 
-            render={() => <ConstraintView 
+            render={() => <Propagation 
               names={this.state.names} 
               namesChecked={this.state.namesChecked} 
               map={this.state.windedMap}
@@ -104,12 +103,7 @@ export default class Layout extends React.Component {
               timeWind={this.state.timeWind}
               maxWind={this.state.maxWind} 
           />}/>
-          <Route path="/constraints" exact 
-            render={() => <Constraints
-              namesChecked={this.state.namesChecked} 
-              comparisons={this.state.comparisons} 
-          />}/>
-          <Route path="/" exact render={() => <Source setTitle={this.setTitle.bind(this)}/>}/>
+          <Route path="/" exact render={() => <Start setTitle={this.setTitle.bind(this)}/>}/>
         </Switch>
       </div>
     </div>;

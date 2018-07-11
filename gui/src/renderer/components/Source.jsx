@@ -2,10 +2,11 @@ import React from 'react';
 import Navigation from './Panel/Navigation.jsx'
 import FileUpload from './Panel/File.jsx'
 import {Controlled as CodeMirror} from 'react-codemirror2';
+import 'codemirror/mode/javascript/javascript';
 
 const options = {
   lineNumbers: true,
-  mode: 'prolog',
+  mode: 'javascript',
   theme: 'base16-dark'
 }
 
