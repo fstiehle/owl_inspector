@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>owl_tracer.pl</title>
+
+<link rel="stylesheet" type="text/css" href="pldoc.css">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+</head>
+<body>
+
+
+<h1 class="file"><span style="float:right"></span>owl_tracer.pl</h1>
+
+<dl>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="📌/1"><b class="pred">📌</b><var class="arglist">(+Goal)</var></a></dt><dd class="defbody">Shortcut for <a href="owl_tracer.html#owl_trace/1">owl_trace/1</a></dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="📌/2"><b class="pred">📌</b><var class="arglist">(+Vars, +Names)</var></a></dt><dd class="defbody">Shortcut for <a href="owl_tracer.html#owl_trace/2">owl_trace/2</a></dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="owl_trace/1"><b class="pred">owl_trace</b><var class="arglist">(+Goal)</var></a></dt><dd class="defbody">Trace state after the given goal is executed
+Variables contained in <var>Goal</var> need to be first given names
+via <a href="owl_tracer.html#owl_trace/2">owl_trace/2</a></dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="owl_trace/2"><b class="pred">owl_trace</b><var class="arglist">(+Vars, +Names)</var></a></dt><dd class="defbody">Trace given variables. <var>Vars</var> is a list of variables.
+<var>Names</var> is a list and needs to supply a name for each variable</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="owl_send/0"><b class="pred">owl_send</b></a></dt><dd class="defbody">Start a server and send the trace, or send the trace over a
+already existing connection</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="owl_clean/0"><b class="pred">owl_clean</b></a></dt><dd class="defbody">Clean the trace</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="owl_names_from_term/3"><b class="pred">owl_names_from_term</b><var class="arglist">(+Term, -Result, +Postfix)</var></a></dt><dd class="defbody">Same as <a href="owl_tracer.html#owl_names_from_term/2">owl_names_from_term/2</a> but adds the given <var>Postfix</var> to every name</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="owl_gen_names/3"><b class="pred">owl_gen_names</b><var class="arglist">(+Number, -Result, +Postfix)</var></a></dt><dd class="defbody">Same as <a href="owl_tracer.html#owl_gen_names/2">owl_gen_names/2</a> but adds the given <var>Postfix</var> to every name</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="owl_names_from_term/2"><b class="pred">owl_names_from_term</b><var class="arglist">(+Term, -Result)</var></a></dt><dd class="defbody">Takes the term <var>Term</var> and generates a name for each variable
+in <var>Term</var>.</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="owl_gen_names/2"><b class="pred">owl_gen_names</b><var class="arglist">(+Number, -Result)</var></a></dt><dd class="defbody">Generates the through <var>Number</var> given amount
+of names</dd>
+</dl>
+
+</body>
+</html>

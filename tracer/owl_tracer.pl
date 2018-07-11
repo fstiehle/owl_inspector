@@ -26,15 +26,23 @@
 /* ------------------ 
  * Public predicates
  --------------------*/
+%% '📌'(+Goal)
+% Shortcut for owl_trace/1
 '📌'(Goal) :- owl_trace(Goal).
+
+%% '📌'(+Vars,+Names)
+% Shortcut for owl_trace/2
 '📌'(Vars, Names) :- owl_trace(Vars, Names).
 
 %% owl_trace(+Goal)
 % Trace state after the given goal is executed
+% Variables contained in Goal need to be first given names
+% via owl_trace/2
 owl_trace(Goal) :- trace_goal(Goal).
 
 %% owl_trace(+Vars, +Names)
-% Trace given variables when they become ground
+% Trace given variables. Vars is a list of variables.
+% Names is a list and needs to supply a name for each variable
 owl_trace(Vars, Names) :-
   \+ground(Vars),
   is_list(Names),
@@ -44,27 +52,42 @@ owl_trace(Vars, Names) :-
 owl_file(Bag) :-
   bagof(Json, to_json(Json), Bag).
 
+%% owl_send
+% Start a server and send the trace, or send the trace over a
+% already existing connection
 owl_send :-
   start_server ; talk.
 
+%% owl_clean
+% Clean the trace
 owl_clean :-
   retractall(variables(_)),
   retractall(tracepoint(_,_,_,_,_)).
 
+%% owl_names_from_term(+Term, -Result, +Postfix)
+% Same as owl_names_from_term/2 but adds the given Postfix to every name
 owl_names_from_term(Term, Result, Postfix) :-
   term_variables(Term, Vars),
   length(Vars, L),
   owl_gen_names(L, Result, Postfix).
 
+%% owl_gen_names(+Number, -Result, +Postfix)
+% Same as owl_gen_names/2 but adds the given Postfix to every name
 owl_gen_names(Number, Result, Postfix) :-
   I is ceiling(Number / 26),
   findnsols(I, R, gen_names(Postfix, R), List), !,
   append(List, List2),
   take(Number, List2, Result).
 
+%% owl_names_from_term(+Term, -Result)
+% Takes the term Term and generates a name for each variable
+% in Term.
 owl_names_from_term(Term, Result) :-
   owl_names_from_term(Term, Result, _).
 
+%% owl_gen_names(+Number, -Result)
+% Generates the through Number given amount 
+% of names
 owl_gen_names(Number, Result) :-
   owl_gen_names(Number, Result, _).
 
