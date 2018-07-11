@@ -48,5 +48,8 @@ Each bar depicts the state of one variable at a given timestamp
 
 ![3D Propagation](https://github.com/fstiehle/owl_inspector/blob/master/docs/propagation.png)
 
+## Tracer
+Access the tracer's docs in `docs/owl_tracer.html`
+
 ## Hosting the GUI yourself
 All the necessary files of the GUI are contained in the `gui/dist` folder once `npm run` or `gulp run`  or `gulp build` is executed. This represents a static web page and can be hosted on every server. The socket address in `tracer/owl_server` as well as in `gui/src/renderer/components/Layout.jsx` need to be adopted.
