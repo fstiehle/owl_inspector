@@ -12,9 +12,9 @@ The `owl_tracer` module exposes a set of annotations that can be used by a CLP p
 
 You can use the following predicates to annotate your program. 
 - `'📌'/1`
-  - `'📌'/2`
- - `owl_trace/1`
- - `owl_trace/2`
+- `'📌'/2`
+- `owl_trace/1`
+- `owl_trace/2`
 
 ```js
 :- use_module(library(clpfd)).
@@ -38,13 +38,13 @@ Use `owl_send/0` to start a socket connection and send the trace to the GUI.
 ?- sendmore(L), labeling([], L), owl_send.
 ```
 
-## Propagation view
+## 3D Propagation view
 Each bar depicts the state of one variable at a given timestamp
 - The height of the bar represents its domain size
 - timestamps progress along the x-axis
 - variables are arranged along the y-axis
 
-[[https://github.com/fstiehle/owl_inspector/blob/master/docs/propagation.png|alt=propagation]]
+![3D Propagation](https://github.com/fstiehle/owl_inspector/blob/master/docs/propagation.png)
 
 ## Hosting the GUI yourself
 All the necessary files of the GUI are contained in the `gui/dist` folder once `npm run` or `gulp run`  or `gulp build` is executed. This represents a static web page and can be hosted on every server. The socket address in `tracer/owl_server` as well as in `gui/src/renderer/components/Layout.jsx` need to be adopted.
