@@ -18,6 +18,8 @@ You can use the following predicates to annotate your program.
 - `owl_trace/1`
 - `owl_trace/2`
 
+`'📌'/2` or `owl_trace/2` need to be called before anything else with all the variables that need to be traced. All variables need to be assigned names. See the docs for more info and a way to automatically generate names.
+
 ```js
 :- use_module(library(clpfd)).
 :- use_module(tracer/owl_tracer).
