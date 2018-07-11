@@ -1,5 +1,4 @@
-import Constraint from "./model/Constraint"
-import Label from "./model/Label"
+import Tracepoint from "./model/Tracepoint"
 
 export default class Parser {
   constructor(Json) {
@@ -33,50 +32,23 @@ export default class Parser {
 
       if (!element["names"]) {
         throw new SyntaxError("JSON format error")
-      }
-
-      if (element["possibleValues"]) {
-        this.parseComparison(element)
-        continue
-      }
+      }     
 
       if (!element["values"] || !element["domains"] 
         || !element["domainSizes"]) {
         throw new SyntaxError("JSON format error")
       }
-      if (element["id"]) {
-        this.parseConstraint(element, i)
-      } else {
-        this.parseLabeling(element, i)
-      }        
+
+      this.parseTracepoint(element, i)            
     }
   }
 
-  parseComparison(object) {
-    if (object.names.length !== 2) {
-      throw new SyntaxError("JSON format error")
-    }
-    this.comparisons.push(object)
-  }
-
-  parseConstraint(object, timeStamp) {
+  parseTracepoint(object, timeStamp) {
     this.map[timeStamp] = []
     for (let i = 0; i < object["names"].length; ++i) {
       this.map[timeStamp]
-        .push(new Constraint(
+        .push(new Tracepoint(
           object["id"],
-          object["names"][i],
-          object["values"][i],
-          object["domains"][i],
-          object["domainSizes"][i]))
-    }
-  }
-
-  parseLabeling(object, timeStamp) {
-    this.map[timeStamp] = []
-    for (let i = 0; i < object["names"].length; ++i) {
-      this.map[timeStamp]
-        .push(new Label(
           object["names"][i],
           object["values"][i],
           object["domains"][i],

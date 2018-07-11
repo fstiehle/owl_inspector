@@ -13,16 +13,13 @@ export default class SearchTree extends React.Component {
     if (map.length <= 0)
       return []
     let tree = {}
-    tree.name = "labeling"
+    tree.name = "Search tree"
     tree.data = []
-    map.forEach(element => {
-      if (element[0].id) {
-        return // skip constraints
-      }
+    map.forEach(element => {      
       this.insertIntoDataMapR(element, tree)
     })
     return tree
-  } 
+  }
 
   generateChild(tree, grounded, values, names) {
     const valueNames = values.map(value => {
@@ -99,7 +96,7 @@ export default class SearchTree extends React.Component {
         symbolSize: 12,
         orient: 'vertical',
         expandAndCollapse: true,
-        initialTreeDepth: 4,
+        initialTreeDepth: 10,
         itemStyle: {
           borderColor: '#fff'
         },

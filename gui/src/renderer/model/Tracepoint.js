@@ -1,5 +1,6 @@
 export default class Label {
-  constructor(name, value, domain, domainSize, possibleValues) {
+  constructor(id, name, value, domain, domainSize, possibleValues) {
+    this.id = id
     this.name = name
     this.value = value
     this.domain = domain
