@@ -1,5 +1,7 @@
 Owl Tracer is a web based visualisation software for SWI-Prolog’s CLP(FD) library.
 
+Take a look at the `examples` folder to get a quick overview of what's possible.
+
 ## Quickstart
 ### Install
 Prerequisites:  `npm` & `SWI Prolog` both available, for example, via `bower`.
