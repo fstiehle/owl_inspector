@@ -9,35 +9,9 @@ export default class Propagation extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {
-      map: [],
-      data: [],
-      names: [],
-      chartOption: {}
-    }
   }
 
-  /**
-   * Update state when new winded map is received
-   * @param {*} nextProps 
-   * @param {*} prevState 
-   */
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.map.length == prevState.map.length 
-      && nextProps.namesChecked.length == prevState.names.length) {
-        return null
-    }
-    let map = ConstraintView.generateDataMap(nextProps.namesChecked, nextProps.map)
-    let chartOption = ConstraintView.generateChartOption(nextProps.namesChecked, map)
-    return {
-      map: nextProps.map,
-      names: nextProps.namesChecked,
-      data: map,
-      chartOption: chartOption
-    }
-  }
-
-  static generateChartOption(names, map) {
+  generateChartOption(names, map) {
     return {
       tooltip: {
         formatter: (param) => {
@@ -85,7 +59,7 @@ export default class Propagation extends React.Component {
     }
   }
 
-  static generateDataMap(names, map) {
+  generateDataMap(names, map) {
     let newMap = [];  
     for (let i = 0; i < map.length; ++i) {
       map[i].forEach(element => {
@@ -125,19 +99,20 @@ export default class Propagation extends React.Component {
   }
 
   render() {
+    const map = this.generateDataMap(this.props.namesChecked, this.props.map)
     return <div className="split-view">
       <div className="col-xs-12 col-md-2">
         <Navigation />
         <Variables 
           toggleVar={this.props.toggleVar} 
-          namesChecked={this.state.names} 
+          namesChecked={this.props.namesChecked} 
           names={this.props.names}/>
       </div>
       <div className="col-xs-12 col-md-10 content">
         <div className="border-top">
           <h1 className="text-medium text-gray">Constraint Propagation</h1>
           <ReactEcharts
-            option={this.state.chartOption}
+            option={this.generateChartOption(this.props.namesChecked, map)}
             style={{'height': '63vh', width: '100%'}}
             lazyUpdate={true}
             theme={"light"}/>
