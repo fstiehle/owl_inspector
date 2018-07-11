@@ -2,4 +2,4 @@
 dist
 node_modules
 playground.pl
-*.png
+/*.png
