@@ -41,6 +41,7 @@ Use `owl_send/0` to start a socket connection and send the trace to the GUI.
 ```js
 ?- sendmore(L), labeling([], L), owl_send.
 ```
+__Use `owl_clean/0` to flush the trace before running the program again.__ 
 
 ## 3D Propagation view
 Each bar depicts the state of one variable at a given timestamp
