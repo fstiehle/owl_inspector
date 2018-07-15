@@ -18,6 +18,8 @@ You can use the following predicates to annotate your program.
 - `owl_trace/1`
 - `owl_trace/2`
 
+`'📌'/2` or `owl_trace/2` need to be called before anything else with all the variables that need to be traced. All variables need to be assigned names. See the docs for more info and a way to automatically generate names.
+
 ```js
 :- use_module(library(clpfd)).
 :- use_module(tracer/owl_tracer).
@@ -39,6 +41,7 @@ Use `owl_send/0` to start a socket connection and send the trace to the GUI.
 ```js
 ?- sendmore(L), labeling([], L), owl_send.
 ```
+__Use `owl_clean/0` to flush the trace before running the program again.__ 
 
 ## 3D Propagation view
 Each bar depicts the state of one variable at a given timestamp
@@ -47,6 +50,9 @@ Each bar depicts the state of one variable at a given timestamp
 - variables are arranged along the y-axis
 
 ![3D Propagation](https://github.com/fstiehle/owl_inspector/blob/master/docs/propagation.png)
+
+## Tracer
+Access the tracer's docs in `docs/owl_tracer.html`
 
 ## Hosting the GUI yourself
 All the necessary files of the GUI are contained in the `gui/dist` folder once `npm run` or `gulp run`  or `gulp build` is executed. This represents a static web page and can be hosted on every server. The socket address in `tracer/owl_server` as well as in `gui/src/renderer/components/Layout.jsx` need to be adopted.
