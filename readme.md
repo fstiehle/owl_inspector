@@ -5,7 +5,7 @@ Take a look at the `examples` folder to get a quick overview of what's possible.
 ## Quickstart
 ### Install
 Prerequisites:  `npm` & `SWI Prolog` both available, for example, via `bower`.
-Install via  `npm init`. Run `npm run` or `gulp run` once.
+Install via `npm install` (In the directory). Run `npm run` or `gulp run` once.
 
 ### Hello world
 Start the server with `npm run` or `gulp run`. Once this is done once, the server can be started via `gulp webserver`. The GUI can be accessed at: [http://localhost:8080/](http://localhost:8080/)
